@@ -1,0 +1,14 @@
+<header class="p-4 bg-gray-100 flex items-center space-x-6">
+  <h1 class="text-xl font-bold">QR Pantry</h1>
+  <nav class="flex space-x-4">
+    <!-- The routerLink for "Home" might point to a default child of dashboard or be handled by a redirect -->
+    <a routerLink="/" routerLinkActive="underline">Home</a>
+    <a routerLink="/scan" routerLinkActive="underline">Scan QR</a>
+    <a routerLink="/pantry" routerLinkActive="underline">Pantry</a>
+    <a routerLink="/recipes" routerLinkActive="underline">Recipes</a>
+  </nav>
+</header>
+
+<main class="p-4">
+  <router-outlet></router-outlet> <!-- Child route components will be rendered here -->
+</main>

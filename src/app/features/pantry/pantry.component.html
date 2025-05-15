@@ -1,0 +1,11 @@
+<h2>Your Receipt Items</h2>
+    <ng-container *ngIf="products$ | async as products">
+      <ul *ngIf="products && products.length > 0; else empty">
+        <li *ngFor="let p of products">
+          {{ p.name }} — {{ p.quantity  }} × {{ p.price | number : '1.2-2' }}
+        </li>
+      </ul>
+    </ng-container>
+    <ng-template #empty>
+      <p>No items yet. Scan a receipt first.</p>
+    </ng-template>

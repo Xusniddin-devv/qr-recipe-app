@@ -1,0 +1,11 @@
+<h2>Recipe Suggestions</h2>
+    <ul *ngIf="(products$ | async) as items; else noData">
+      <ng-container *ngIf="items && items.length > 0; else noData">
+        <li *ngFor="let sug of makeSuggestions(items)">
+          {{ sug }}
+        </li>
+      </ng-container>
+    </ul>
+    <ng-template #noData>
+      <p>Nothing to suggest yet. Scan a receipt first.</p>
+    </ng-template>
