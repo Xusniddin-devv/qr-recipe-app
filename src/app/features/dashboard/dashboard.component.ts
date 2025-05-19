@@ -1,11 +1,10 @@
-// filepath: c:\Users\D1n\OneDrive\Desktop\Project\qr-recipe-app\src\app\features\dashboard\dashboard.component.ts
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router } from 'express';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {}

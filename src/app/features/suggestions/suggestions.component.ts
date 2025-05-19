@@ -1,18 +1,30 @@
-// src/app/suggestions/suggestions.component.ts
-import { Component, inject } from '@angular/core';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { AsyncPipe, CurrencyPipe, NgForOf, NgIf } from '@angular/common';
 import { CheckService, Product } from '../../core/check.service';
+import { Observable, tap } from 'rxjs';
 
 @Component({
-  standalone: true,
-  imports: [NgForOf, AsyncPipe, NgIf],
+  imports: [NgForOf, AsyncPipe, NgIf, CurrencyPipe],
   selector: 'app-suggestions',
   templateUrl: './suggestions.component.html',
 })
-export class SuggestionsComponent {
+export class SuggestionsComponent implements OnInit {
   check = inject(CheckService);
-  products$ = this.check.products$;
-  makeSuggestions(items: Product[]) {
-    return items.map((i) => `Use ${i.quantity}× ${i.name} in a stir-fry`);
+  products$!: Observable<Product[]>;
+  summary$!: Observable<Product[]>;
+  isItemPriceNaN(price: any): boolean {
+    return isNaN(Number(price));
+  }
+  makeSuggestions(items: Product[]): string[] {
+    return items.map(
+      (i: Product) => `Use ${i.quantity}× ${i.name} in a stir-fry`
+    );
+  }
+  ngOnInit(): void {
+    this.summary$ = this.check.summary$.pipe(
+      tap((summary) => {
+        console.log('Summary received in PantryComponent:', summary);
+      })
+    );
   }
 }

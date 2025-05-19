@@ -1,18 +1,36 @@
 import { Routes } from '@angular/router';
-import { PantryComponent } from './features/pantry/pantry.component';
-import { QrScannerComponent } from './features/qr-scanner/qr-scanner.component';
-import { SuggestionsComponent } from './features/suggestions/suggestions.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
+
 export const routes: Routes = [
+  // Default route redirects to dashboard
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+  // Main dashboard route
+  { path: 'dashboard', component: DashboardComponent },
+
+  // Feature routes as siblings, not children
   {
-    path: '',
-    component: DashboardComponent,
-    children: [
-      { path: '', redirectTo: 'scan', pathMatch: 'full' },
-      { path: 'scan', component: QrScannerComponent },
-      { path: 'pantry', component: PantryComponent },
-      { path: 'recipes', component: SuggestionsComponent },
-    ],
+    path: 'scan',
+    loadComponent: () =>
+      import('./features/qr-scanner/qr-scanner.component').then(
+        (m) => m.QrScannerComponent
+      ),
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: 'pantry',
+    loadComponent: () =>
+      import('./features/pantry/pantry.component').then(
+        (m) => m.PantryComponent
+      ),
+  },
+  {
+    path: 'recipes',
+    loadComponent: () =>
+      import('./features/suggestions/suggestions.component').then(
+        (m) => m.SuggestionsComponent
+      ),
+  },
+
+  // Catch-all route
+  { path: '**', redirectTo: 'dashboard' },
 ];

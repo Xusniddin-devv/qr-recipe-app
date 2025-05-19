@@ -9,3 +9,35 @@
     <ng-template #noData>
       <p>Nothing to suggest yet. Scan a receipt first.</p>
     </ng-template>
+
+     <ng-container *ngIf="summary$ | async as summary">
+  <div *ngIf="summary.length" class="summary-container">
+    <h3 class="section-title">Receipt Summary</h3>
+    <ul class="summary-list">
+      <li *ngFor="let item of summary" class="summary-item">
+        <span class="summary-name">{{ item.name }}</span>
+        <span class="summary-value">
+
+          <ng-container *ngIf="item.quantity !== null && item.quantity !== undefined">
+            <ng-container *ngIf="isItemPriceNaN(item.quantity); else quantityNumber">
+              {{ item.quantity }}
+            </ng-container>
+            <ng-template #quantityNumber>
+              {{ item.quantity | currency: 'UZS ' }}
+            </ng-template>
+          </ng-container>
+
+          <ng-container *ngIf="(item.quantity === null || item.quantity === undefined) &&
+                              (item.price !== null && item.price !== undefined)">
+            <ng-container *ngIf="isItemPriceNaN(item.price); else priceNumber">
+              {{ item.price }}
+            </ng-container>
+            <ng-template #priceNumber>
+              {{ item.price | currency: 'UZS ' }}
+            </ng-template>
+          </ng-container>
+        </span>
+      </li>
+    </ul>
+  </div>
+</ng-container>

@@ -1,11 +1,52 @@
-<h2>Your Receipt Items</h2>
-    <ng-container *ngIf="products$ | async as products">
-      <ul *ngIf="products && products.length > 0; else empty">
-        <li *ngFor="let p of products">
-          {{ p.name }} — {{ p.quantity  }} × {{ p.price | number : '1.2-2' }}
+<div class="p-5 max-w-3xl mx-auto">
+  <h2 class="mb-5">My Pantry</h2>
+
+  <ng-container *ngIf="products$ | async as products">
+    <div *ngIf="products.length" class="bg-white rounded-lg shadow-sm">
+      <h3 class="mt-0 py-3 px-4 bg-gray-100 border-b border-gray-200 text-lg font-medium">Products</h3>
+      <ul class="list-none p-0">
+        <li *ngFor="let product of products" class="grid grid-cols-[2fr_1fr_1fr] gap-4 p-4 border-b border-gray-200">
+          <span class="font-medium break-words">{{ product.name }}</span>
+          <span class="text-center">{{ product.quantity || 1 }}</span>
+          <span class="text-right">{{ product.price | currency: 'UZS ' }}</span>
         </li>
       </ul>
-    </ng-container>
-    <ng-template #empty>
-      <p>No items yet. Scan a receipt first.</p>
-    </ng-template>
+    </div>
+
+    <div *ngIf="!products.length" class="py-10 px-5 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+      No products in your pantry yet. Scan a receipt to add items.
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="summary$ | async as summary">
+    <div *ngIf="summary.length" class="mt-6 bg-white rounded-lg shadow-sm">
+      <h3 class="mt-0 py-3 px-4 bg-gray-100 border-b border-gray-200 text-lg font-medium">Receipt Summary</h3>
+      <ul class="list-none p-0">
+        <li *ngFor="let item of summary; let last = last" class="flex justify-between py-3 px-4 border-b border-gray-200"
+            [ngClass]="{'border-b-0 font-bold': last}">
+          <span class="font-medium">{{ item.name }}</span>
+          <span class="font-medium">
+            <ng-container *ngIf="item.quantity !== null && item.quantity !== undefined">
+              <ng-container *ngIf="isItemPriceNaN(item.quantity); else quantityNumber">
+                {{ item.quantity }}
+              </ng-container>
+              <ng-template #quantityNumber>
+                {{ item.quantity | currency: 'UZS ' }}
+              </ng-template>
+            </ng-container>
+
+            <ng-container *ngIf="(item.quantity === null || item.quantity === undefined) &&
+                                (item.price !== null && item.price !== undefined)">
+              <ng-container *ngIf="isItemPriceNaN(item.price); else priceNumber">
+                {{ item.price }}
+              </ng-container>
+              <ng-template #priceNumber>
+                {{ item.price | currency: 'UZS ' }}
+              </ng-template>
+            </ng-container>
+          </span>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+</div>

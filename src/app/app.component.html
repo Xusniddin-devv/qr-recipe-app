@@ -1,1 +1,15 @@
-<router-outlet></router-outlet>
+<div class="grid grid-rows-[1fr_auto] min-h-screen">
+  <main class="p-4">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer *ngIf="showNavigation" class="p-4 bg-gray-100">
+    <div class="grid grid-cols-1 gap-4 items-center">
+      <nav class="grid grid-cols-3 w-full">
+        <a routerLink="/scan" routerLinkActive="font-bold text-blue-600" class="text-center">Scan QR</a>
+        <a routerLink="/pantry" routerLinkActive="font-bold text-blue-600" class="text-center">Pantry</a>
+        <a routerLink="/recipes" routerLinkActive="font-bold text-blue-600" class="text-center">Recipes</a>
+      </nav>
+    </div>
+  </footer>
+</div>

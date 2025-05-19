@@ -1,14 +1,13 @@
-<header class="p-4 bg-gray-100 flex items-center space-x-6">
-  <h1 class="text-xl font-bold">QR Pantry</h1>
-  <nav class="flex space-x-4">
-    <!-- The routerLink for "Home" might point to a default child of dashboard or be handled by a redirect -->
-    <a routerLink="/" routerLinkActive="underline">Home</a>
-    <a routerLink="/scan" routerLinkActive="underline">Scan QR</a>
-    <a routerLink="/pantry" routerLinkActive="underline">Pantry</a>
-    <a routerLink="/recipes" routerLinkActive="underline">Recipes</a>
-  </nav>
-</header>
+<div class="flex flex-col items-center justify-center min-h-[80vh] text-center p-6">
+  <h1 class="text-3xl font-bold mb-4">Welcome to QR Pantry</h1>
+  <p class="text-lg mb-8">Keep track of your groceries and discover new recipes</p>
 
-<main class="p-4">
-  <router-outlet></router-outlet> <!-- Child route components will be rendered here -->
-</main>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <a routerLink="/scan" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg text-lg flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2m0 0v7m0-7h-6m6 0l-3-3m3 3l3-3" />
+      </svg>
+      Scan Receipt
+    </a>
+  </div>
+</div>
