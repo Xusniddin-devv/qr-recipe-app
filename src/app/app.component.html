@@ -1,15 +1,14 @@
 <div class="grid grid-rows-[1fr_auto] min-h-screen">
-  <main class="p-4">
+  <main class="p-4 pb-16">
     <router-outlet></router-outlet>
   </main>
 
-  <footer *ngIf="showNavigation" class="p-4 bg-gray-100">
-    <div class="grid grid-cols-1 gap-4 items-center">
-      <nav class="grid grid-cols-3 w-full">
-        <a routerLink="/scan" routerLinkActive="font-bold text-blue-600" class="text-center">Scan QR</a>
-        <a routerLink="/pantry" routerLinkActive="font-bold text-blue-600" class="text-center">Pantry</a>
-        <a routerLink="/recipes" routerLinkActive="font-bold text-blue-600" class="text-center">Recipes</a>
-      </nav>
-    </div>
+  <footer *ngIf="showNavigation" class="fixed bottom-0 left-0 w-full p-4 bg-transparent border-t border-gray-300 z-50">
+    <nav class="grid grid-cols-3 w-full">
+      <a routerLink="/scan" routerLinkActive="font-bold text-blue-600" class="text-center">
+        <img src="assets/qrcode-scanner.png" alt="Scan QR Code" class="w-8 h-8 items-center"></a>
+      <a routerLink="/pantry" routerLinkActive="font-bold text-blue-600" class="text-center">Pantry</a>
+      <a routerLink="/recipes" routerLinkActive="font-bold text-blue-600" class="text-center">Recipes</a>
+    </nav>
   </footer>
 </div>

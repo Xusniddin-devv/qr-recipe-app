@@ -1,25 +1,32 @@
-<button class="block mx-auto my-4 px-4 py-2 bg-[#1c7ab0] text-white border-none rounded cursor-pointer text-base" (click)="streamActive ? stopScanner() : startScanner()">
-  {{ streamActive ? 'Stop Camera' : 'Start Camera' }}
-</button>
-
 <ng-container *ngIf="streamActive">
-  <div class="relative w-full max-w-[400px] aspect-[4/3] mx-auto my-4 overflow-hidden rounded-lg bg-black block">
+  <div class="
+    fixed inset-0 w-screen h-screen bg-black overflow-hidden block z-40
+    md:relative md:inset-auto md:w-full md:max-w-xl lg:max-w-2xl md:aspect-[16/9] md:mx-auto md:my-4 md:rounded-lg md:z-auto
+  ">
     <video #video class="w-full h-full object-cover block" playsinline muted></video>
     <canvas #canvas class="hidden"></canvas>
 
-    <div class="absolute w-6 h-6 border-4 border-white top-[10%] left-[10%] border-r-0 border-b-0"></div>
-    <div class="absolute w-6 h-6 border-4 border-white top-[10%] right-[10%] border-l-0 border-b-0"></div>
-    <div class="absolute w-6 h-6 border-4 border-white bottom-[10%] left-[10%] border-r-0 border-t-0"></div>
-    <div class="absolute w-6 h-6 border-4 border-white bottom-[10%] right-[10%] border-l-0 border-t-0"></div>
+    <div class="absolute w-6 h-6 border-4 border-white top-[35%] left-[25%] border-r-0 border-b-0"></div>
+    <div class="absolute w-6 h-6 border-4 border-white top-[35%] right-[25%] border-l-0 border-b-0"></div>
+    <div class="absolute w-6 h-6 border-4 border-white bottom-[35%] left-[25%] border-r-0 border-t-0"></div>
+    <div class="absolute w-6 h-6 border-4 border-white bottom-[35%] right-[25%] border-l-0 border-t-0"></div>
 
-    <button class="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/50 border-none p-2 rounded-full text-xl text-white cursor-pointer" (click)="toggleTorch()">
+    <div *ngIf="showStatus"
+          class="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 p-2.5 text-center font-bold transition-all duration-300 ease-in-out border-2 border-transparent rounded-md w-auto max-w-[80%]"
+          [ngClass]="{
+            'bg-[#4CAF50] text-white border-[#388E3C] animate-pulse': decodedUrl !== null && !hasError,
+            'bg-red-500 text-white border-red-700': hasError
+          }">
+      {{status}}
+    </div>
+
+    <button class="absolute bottom-16 left-1/2 -translate-x-1/2 bg-black/50 border-none p-3 rounded-full text-2xl text-white cursor-pointer z-50" (click)="toggleTorch()">
       <span [class]="torchOn ? 'text-[gold]' : ''">🔦</span>
     </button>
   </div>
 </ng-container>
+<button class="block mx-auto my-4 px-4 py-2 bg-[#1c7ab0] text-white border-none rounded cursor-pointer text-base" (click)="streamActive ? stopScanner() : startScanner()">
+  {{ streamActive ? 'Stop Camera' : 'Start Camera' }}
+</button>
 
-<!-- Status message - initially hidden -->
-<div *ngIf="showStatus" class="mt-4 p-2.5 text-center font-bold transition-all duration-300 ease-in-out border-2 border-transparent rounded-md"
-     [class.bg-[#4CAF50]] [class.text-white] [class.border-[#388E3C]] [class.animate-pulse]="decodedUrl !== null">
-  {{status}}
-</div>
+
