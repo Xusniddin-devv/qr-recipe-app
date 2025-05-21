@@ -1,9 +1,15 @@
-<div class="flex flex-col items-center justify-center min-h-[80vh] text-center p-6">
-  <h1 class="text-3xl font-bold mb-4">Welcome to QR Pantry</h1>
-  <p class="text-lg mb-8">Keep track of your groceries and discover new recipes</p>
+<div class="grid grid-rows-[auto_1fr_auto] min-h-[calc(80vh-var(--header-height,64px))] p-6">
+  <div class="flex flex-col items-center justify-center text-center">
+    <h1 class="text-3xl font-bold mb-4">Welcome to QR Pantry</h1>
+    <p class="text-lg mb-8">Keep track of your groceries and get AI suggestions</p>
+  </div>
 
-  <div class="flex flex-col sm:flex-row gap-4">
-    <a routerLink="/scan" class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg text-lg flex items-center justify-center">
+  <div class="flex items-center justify-center">
+    <img src="../assets/dashboard.png" alt="img" class="rounded-lg w-xs h-xs">
+  </div>
+
+  <div class="flex justify-center py-4 mt-10">
+    <a routerLink="/scan" class="bg-blue-700 text-white py-3 px-6 rounded-lg text-lg flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2m0 0v7m0-7h-6m6 0l-3-3m3 3l3-3" />
       </svg>

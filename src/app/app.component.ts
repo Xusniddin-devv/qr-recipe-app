@@ -26,12 +26,10 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Monitor route changes
     this.subscription.add(
       this.router.events
         .pipe(filter((event) => event instanceof NavigationEnd))
         .subscribe((event: any) => {
-          // Hide navigation on dashboard, show on other routes
           if (event.url === '/dashboard' || event.url === '/') {
             this.navService.hideNavigation();
           } else {
@@ -40,7 +38,6 @@ export class AppComponent implements OnInit, OnDestroy {
         })
     );
 
-    // Subscribe to the visibility service
     this.subscription.add(
       this.navService.showNavigation$.subscribe(
         (show) => (this.showNavigation = show)

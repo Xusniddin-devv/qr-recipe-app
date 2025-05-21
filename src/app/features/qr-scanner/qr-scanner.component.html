@@ -5,7 +5,6 @@
   ">
     <video #video class="w-full h-full object-cover block" playsinline muted></video>
     <canvas #canvas class="hidden"></canvas>
-
     <div class="absolute w-6 h-6 border-4 border-white top-[35%] left-[25%] border-r-0 border-b-0"></div>
     <div class="absolute w-6 h-6 border-4 border-white top-[35%] right-[25%] border-l-0 border-b-0"></div>
     <div class="absolute w-6 h-6 border-4 border-white bottom-[35%] left-[25%] border-r-0 border-t-0"></div>
@@ -25,8 +24,25 @@
     </button>
   </div>
 </ng-container>
-<button class="block mx-auto my-4 px-4 py-2 bg-[#1c7ab0] text-white border-none rounded cursor-pointer text-base" (click)="streamActive ? stopScanner() : startScanner()">
-  {{ streamActive ? 'Stop Camera' : 'Start Camera' }}
-</button>
-
-
+<div *ngIf="!streamActive" class="fixed inset-0 flex items-center justify-center z-30 pointer-events-none">
+  <button
+    class="
+      w-20 h-20
+      bg-[#1c7ab0] hover:bg-[#186a9a] active:bg-[#145a85]
+      text-white
+      border-none
+      rounded-full
+      cursor-pointer
+      text-sm
+      flex items-center justify-center
+      shadow-lg hover:shadow-xl
+      transition-all duration-200 ease-in-out
+      transform hover:scale-105 active:scale-95
+      pointer-events-auto
+    "
+    (click)="startScanner()"
+    aria-label="Start Camera"
+  >
+    <span>Start</span>
+  </button>
+</div>
