@@ -10,10 +10,6 @@ import { tap } from 'rxjs/operators';
   templateUrl: './pantry.component.html',
 })
 export class PantryComponent implements OnInit {
-  isNaN(arg0: number) {
-    throw new Error('Method not implemented.');
-  }
-
   check = inject(CheckService);
   products$!: Observable<Product[]>;
   summary$!: Observable<Product[]>;

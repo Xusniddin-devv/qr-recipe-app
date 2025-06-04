@@ -25,7 +25,7 @@ export class CheckService {
 
   fetchProducts(url: string): Observable<ReceiptData> {
     return this.http
-      .get<ReceiptData>('http://localhost:3000/api/check', {
+      .get<ReceiptData>('http://localhost:30001/api/check', {
         params: { url, browser: 'chromium' },
       })
       .pipe(
