@@ -24,6 +24,8 @@
     "@angular/router": "^19.2.11",
     "@angular/ssr": "^19.2.12",
     "@tailwindcss/postcss": "^4.1.7",
+    "@zxing/library": "^0.21.3",
+    "@zxing/ngx-scanner": "^19.0.0",
     "angularx-qrcode": "^19.0.0",
     "chart.js": "^4.4.9",
     "express": "^4.21.2",
