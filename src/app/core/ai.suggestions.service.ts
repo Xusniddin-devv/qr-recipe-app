@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Product } from './check.service'; // Product interface should have price as number for actual products
+import { Product } from './check.service';
 import { environment } from '../../environments/environment';
 
 export interface AiSuggestions {
