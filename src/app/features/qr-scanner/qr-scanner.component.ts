@@ -8,7 +8,7 @@ import {
   PLATFORM_ID,
   OnDestroy,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser, NgIf } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import jsQR from 'jsqr';
 import { CheckService, ReceiptData } from '../../core/check.service';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-qr-scanner',
-  imports: [NgIf, CommonModule],
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './qr-scanner.component.html',
 })
