@@ -73,7 +73,7 @@ export class QrScannerComponent implements OnDestroy {
     this.showStatus = true;
     this.decodedUrl = null;
     this.hasError = false;
-    this.status$.next(''); // No "Scanning..." message, stays empty
+    this.status$.next('');
     this.cd.markForCheck();
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -168,14 +168,13 @@ export class QrScannerComponent implements OnDestroy {
     if (
       !this.videoEl?.nativeElement ||
       !this.canvasEl?.nativeElement ||
-      !this.streamActive // Check streamActive here; if false, scanLoop won't call scanFrame
+      !this.streamActive
     ) {
       return;
     }
 
     const video = this.videoEl.nativeElement;
     if (video.readyState !== video.HAVE_ENOUGH_DATA || video.paused) {
-      // If video is paused (e.g. after finding a URL), don't continue scanning
       return;
     }
 
@@ -200,7 +199,6 @@ export class QrScannerComponent implements OnDestroy {
     if (code) {
       const text = code.data.trim();
 
-      // Stop the animation frame loop since we found a code
       if (this.animationFrameId) {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = undefined;
@@ -211,15 +209,12 @@ export class QrScannerComponent implements OnDestroy {
         this.hasError = false;
         console.log('QR code detected (URL):', text);
 
-        // Pause video feed, but keep streamActive true so status messages can show
         if (this.videoEl?.nativeElement) {
           this.videoEl.nativeElement.pause();
         }
-        // Do not set streamActive = false yet.
-        // Do not stop the track yet.
 
         this.status$.next('URL found, processing receipt...');
-        this.showStatus = true; // Ensure status is visible
+        this.showStatus = true;
         this.cd.detectChanges();
 
         if (this.decodedUrl) {
@@ -229,32 +224,28 @@ export class QrScannerComponent implements OnDestroy {
               this.showResults = true;
               this.status$.next('Receipt processed, redirecting...');
               this.hasError = false;
-              this.cd.detectChanges(); // Show "redirecting" message
+              this.cd.detectChanges();
 
-              // Short delay to allow user to see the message, then clean up and navigate
               setTimeout(() => {
                 if (this.track) {
                   this.track.stop();
                   this.track = undefined;
                 }
-                this.streamActive = false; // Now hide the scanner UI
-                this.showStatus = false; // And the status message
-                this.cd.detectChanges(); // Update UI
+                this.streamActive = false;
+                this.showStatus = false;
+                this.cd.detectChanges();
                 this.router.navigate(['/pantry']);
-              }, 500); // 500ms delay
+              }, 500);
             },
             error: (err) => {
               console.error('Error processing receipt:', err);
               this.status$.next('Error processing receipt.');
               this.hasError = true;
-              // Video is already paused. streamActive is still true, so error shows.
               this.cd.detectChanges();
-              // User will need to manually stop/start to try again.
             },
           });
         }
       } else {
-        // Non-URL QR code found
         this.status$.next(
           `Scanned: "${text.substring(0, 40)}..." Not a valid receipt URL.`
         );
@@ -263,7 +254,6 @@ export class QrScannerComponent implements OnDestroy {
         this.cd.detectChanges();
 
         setTimeout(() => {
-          // Ensure video is playing if we resume scanning
           if (
             this.videoEl?.nativeElement &&
             this.videoEl.nativeElement.paused
@@ -274,11 +264,8 @@ export class QrScannerComponent implements OnDestroy {
           }
 
           if (this.videoEl.nativeElement.srcObject && this.track) {
-            this.status$.next(''); // Clear status
+            this.status$.next('');
             this.hasError = false;
-            // streamActive should still be true if we got here from a running scan.
-            // If it was somehow set to false, this won't restart.
-            // Ensure scanLoop is restarted if streamActive is indeed true.
             if (this.streamActive) {
               this.animationFrameId = requestAnimationFrame(() =>
                 this.scanLoop()
@@ -286,7 +273,6 @@ export class QrScannerComponent implements OnDestroy {
             }
             this.cd.markForCheck();
           } else {
-            // If stream somehow broke, force a full stop.
             this.stopScanner();
             this.status$.next(
               'Camera stream issue. Please start camera again.'
@@ -318,13 +304,13 @@ export class QrScannerComponent implements OnDestroy {
         })
         .catch((err) => {
           console.error('Error toggling torch:', err);
-          this.torchOn = !this.torchOn; // Revert state
+          this.torchOn = !this.torchOn;
           this.status$.next('Could not toggle torch.');
           this.hasError = true;
           this.cd.detectChanges();
           setTimeout(() => {
             if (this.status === 'Could not toggle torch.') {
-              this.status$.next(this.streamActive ? '' : this.status$.value); // Revert to empty or current if processing
+              this.status$.next(this.streamActive ? '' : this.status$.value);
               this.hasError = false;
               this.cd.detectChanges();
             }
