@@ -1,56 +1,101 @@
-@if(streamActive){<ng-container>
-  <div
-    class="fixed inset-0 w-screen h-screen bg-black overflow-hidden block z-40 md:relative md:inset-auto md:w-full md:max-w-xl lg:max-w-2xl md:aspect-[16/9] md:mx-auto md:my-4 md:rounded-lg md:z-auto"
-  >
-    <video
-      #video
-      class="w-full h-full object-cover block"
-      playsinline
-      muted
-    ></video>
-    <canvas #canvas class="hidden"></canvas>
-    <div
-      class="absolute w-6 h-6 border-4 border-white top-[35%] left-[25%] border-r-0 border-b-0"
-    ></div>
-    <div
-      class="absolute w-6 h-6 border-4 border-white top-[35%] right-[25%] border-l-0 border-b-0"
-    ></div>
-    <div
-      class="absolute w-6 h-6 border-4 border-white bottom-[35%] left-[25%] border-r-0 border-t-0"
-    ></div>
-    <div
-      class="absolute w-6 h-6 border-4 border-white bottom-[35%] right-[25%] border-l-0 border-t-0"
-    ></div>
-    @if(showStatus){
-    <div
-      class="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 p-2.5 text-center font-bold transition-all duration-300 ease-in-out border-2 border-transparent rounded-md w-auto max-w-[80%]"
-      [ngClass]="{
-        'bg-[#4CAF50] text-white border-[#388E3C] animate-pulse':
-          decodedUrl !== null && !hasError,
-        'bg-red-500 text-white border-red-700': hasError
-      }"
-    >
-      {{ status }}
-    </div>
-    }
-
-    <button
-      class="absolute bottom-16 left-1/2 -translate-x-1/2 bg-black/50 border-none p-3 rounded-full text-2xl text-white cursor-pointer z-50"
-      (click)="toggleTorch()"
-    >
-      <span [class]="torchOn ? 'text-[gold]' : ''">🔦</span>
-    </button>
-  </div> </ng-container
->} @else {
+@if(streamActive){
 <div
-  class="fixed inset-0 flex items-center justify-center z-30 pointer-events-none"
+  class="fixed inset-0 w-screen h-screen bg-black overflow-hidden block z-40 md:relative md:inset-auto md:w-full md:max-w-xl lg:max-w-2xl md:aspect-[16/9] md:mx-auto md:my-4 md:rounded-lg md:z-auto"
 >
-  <button
-    class="w-20 h-20 bg-[#1c7ab0] hover:bg-[#186a9a] active:bg-[#145a85] text-white border-none rounded-full cursor-pointer text-sm flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 pointer-events-auto"
-    (click)="startScanner()"
-    aria-label="Start Camera"
+  <video
+    #video
+    class="w-full h-full object-cover block"
+    playsinline
+    muted
+  ></video>
+  <canvas #canvas class="hidden"></canvas>
+  <div
+    class="absolute w-6 h-6 border-4 border-white top-[35%] left-[25%] border-r-0 border-b-0"
+  ></div>
+  <div
+    class="absolute w-6 h-6 border-4 border-white top-[35%] right-[25%] border-l-0 border-b-0"
+  ></div>
+  <div
+    class="absolute w-6 h-6 border-4 border-white bottom-[35%] left-[25%] border-r-0 border-t-0"
+  ></div>
+  <div
+    class="absolute w-6 h-6 border-4 border-white bottom-[35%] right-[25%] border-l-0 border-t-0"
+  ></div>
+  @if(showStatus){
+  <div
+    class="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 p-2.5 text-center font-bold transition-all duration-300 ease-in-out border-2 border-transparent rounded-md w-auto max-w-[80%]"
+    [ngClass]="{
+      'bg-[#4CAF50] text-white border-[#388E3C] animate-pulse':
+        decodedUrl !== null && !hasError,
+      'bg-red-500 text-white border-red-700': hasError
+    }"
   >
-    <span>Start</span>
+    {{ status }}
+  </div>
+  }
+
+  <button
+    class="absolute bottom-16 left-1/2 -translate-x-1/2 bg-black/50 border-none p-3 rounded-full text-2xl text-white cursor-pointer z-50"
+    (click)="toggleTorch()"
+  >
+    <span [class]="torchOn ? 'text-[gold]' : ''">🔦</span>
   </button>
+</div>
+>} @else {
+<div class="p-5">
+  <!-- Camera container as a button -->
+  <button
+    (click)="startScanner()"
+    class="w-full mx-auto flex flex-col items-center focus:outline-none cursor-pointer"
+  >
+    <div
+      class="w-full aspect-square max-w-md bg-gray-100 border border-dashed border-gray-300 rounded-lg flex items-center justify-center"
+    >
+      <div class="text-gray-400">
+        <i class="pi pi-camera text-6xl"></i>
+      </div>
+    </div>
+  </button>
+  <p class="text-gray-500 text-center mt-2">
+    Align the QR code on your receipt within the frame above.
+  </p>
+
+  <!-- Recent Scans Section -->
+  <div class="mt-8">
+    <h2 class="text-xl font-bold mb-4">Recent Scans</h2>
+
+    @if (isLoading()) {
+    <div class="flex justify-center p-4">
+      <i class="pi pi-spin pi-spinner text-2xl"></i>
+    </div>
+    } @else if (recentScans().length === 0) {
+    <div class="text-center text-gray-500 p-4">No recent scans found</div>
+    } @else {
+    <ul class="list-none p-0 m-0">
+      @for (scan of recentScans(); track scan.id) {
+      <li
+        class="flex items-center py-3 border-b border-gray-200 last:border-b-0"
+      >
+        <i class="pi pi-clock text-gray-500 mr-3"></i>
+        <div class="flex-grow">
+          <div class="font-medium">{{ formatScanDate(scan.timestamp) }}</div>
+          <div class="text-sm text-gray-500 truncate max-w-xs">
+            {{ scan.url }}
+          </div>
+        </div>
+        @if (scan.success) {
+        <span class="text-green-500">
+          <i class="pi pi-check-circle"></i>
+        </span>
+        } @else {
+        <span class="text-red-500">
+          <i class="pi pi-times-circle"></i>
+        </span>
+        }
+      </li>
+      }
+    </ul>
+    }
+  </div>
 </div>
 }

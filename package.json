@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:qr-recipe-app": "node dist/qr-recipe-app/server/server.mjs"
+    "serve:ssr:qr-recipe-app": "node dist/qr-recipe-app/server/server.mjs",
+    "json-server": "json-server --watch db.json --port 3000"
   },
   "private": true,
   "dependencies": {
@@ -29,10 +30,12 @@
     "angularx-qrcode": "^19.0.0",
     "chart.js": "^4.4.9",
     "express": "^4.21.2",
+    "json-server": "^1.0.0-beta.3",
     "jsqr": "^1.4.0",
     "ng-qrcode": "^19.0.1",
     "ngx-scanner-qrcode": "^1.7.6",
     "primeicons": "^7.0.0",
+    "primeng": "^19.1.3",
     "puppeteer": "^24.10.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

@@ -5,14 +5,14 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class NavVisibilityService {
-  private showNavigation = new BehaviorSubject<boolean>(true);
-  public showNavigation$ = this.showNavigation.asObservable();
+  private showNavigationSubject = new BehaviorSubject<boolean>(true);
+  showNavigation$ = this.showNavigationSubject.asObservable();
 
-  hideNavigation() {
-    this.showNavigation.next(false);
+  showNavigationBar(): void {
+    this.showNavigationSubject.next(true);
   }
 
-  showNavigationBar() {
-    this.showNavigation.next(true);
+  hideNavigation(): void {
+    this.showNavigationSubject.next(false);
   }
 }

@@ -1,73 +1,119 @@
 <div class="suggestions-container p-4">
-  <!-- Tab Navigation -->
-  <div class="tabs mb-4 border-b border-gray-300">
-    <button
-      (click)="setActiveTab('receipt')"
-      [ngClass]="{
-        'active-tab border-blue-600 text-blue-600':
-          activeSuggestionTab === 'receipt',
-        'border-transparent hover:text-gray-700 hover:border-gray-300':
-          activeSuggestionTab !== 'receipt',
-        'tab-button': true
-      }"
-      class="px-4 py-2 -mb-px border-b-2 font-semibold focus:outline-none"
+  <!-- Mobile-First Tab Navigation -->
+  <div class="mb-6">
+    <div
+      class="grid grid-cols-3 gap-1 bg-gray-100 rounded-xl p-1 shadow-sm max-w-md mx-auto"
     >
-      Receipt Summary
-    </button>
-    <button
-      (click)="setActiveTab('health')"
-      [ngClass]="{
-        'active-tab border-green-600 text-green-600':
-          activeSuggestionTab === 'health',
-        'border-transparent hover:text-gray-700 hover:border-gray-300':
-          activeSuggestionTab !== 'health',
-        'tab-button': true
-      }"
-      class="px-4 py-2 -mb-px border-b-2 font-semibold focus:outline-none"
-      [disabled]="
-        (isLoadingAiSuggestions$ | async) ||
-        !(hasProductsForSuggestions$ | async)
-      "
-    >
-      Health Suggestions
-    </button>
-    <button
-      (click)="setActiveTab('saving')"
-      [ngClass]="{
-        'active-tab border-orange-600 text-orange-600':
-          activeSuggestionTab === 'saving',
-        'border-transparent hover:text-gray-700 hover:border-gray-300':
-          activeSuggestionTab !== 'saving',
-        'tab-button': true
-      }"
-      class="px-4 py-2 -mb-px border-b-2 font-semibold focus:outline-none"
-      [disabled]="
-        (isLoadingAiSuggestions$ | async) ||
-        !(hasProductsForSuggestions$ | async)
-      "
-    >
-      Saving Suggestions
-    </button>
+      <!-- Receipt Tab -->
+      <button
+        (click)="setActiveTab('receipt')"
+        class="flex flex-col sm:flex-row items-center justify-center py-2.5 px-1 sm:px-3 rounded-lg transition-all"
+        [class]="
+          activeSuggestionTab === 'receipt'
+            ? 'bg-white text-blue-600 shadow'
+            : 'text-gray-600 hover:text-gray-700'
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 sm:mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+          />
+        </svg>
+        <span class="text-xs sm:text-sm font-medium mt-1 sm:mt-0">Receipt</span>
+      </button>
+
+      <!-- Health Tab -->
+      <button
+        (click)="setActiveTab('health')"
+        class="flex flex-col sm:flex-row items-center justify-center py-2.5 px-1 sm:px-3 rounded-lg transition-all"
+        [class]="
+          activeSuggestionTab === 'health'
+            ? 'bg-white text-green-600 shadow'
+            : 'text-gray-600 hover:text-gray-700'
+        "
+        [disabled]="
+          (isLoadingAiSuggestions$ | async) ||
+          !(hasProductsForSuggestions$ | async)
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 sm:mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+          />
+        </svg>
+        <span class="text-xs sm:text-sm font-medium mt-1 sm:mt-0">Health</span>
+      </button>
+
+      <!-- Saving Tab -->
+      <button
+        (click)="setActiveTab('saving')"
+        class="flex flex-col sm:flex-row items-center justify-center py-2.5 px-1 sm:px-3 rounded-lg transition-all"
+        [class]="
+          activeSuggestionTab === 'saving'
+            ? 'bg-white text-orange-600 shadow'
+            : 'text-gray-600 hover:text-gray-700'
+        "
+        [disabled]="
+          (isLoadingAiSuggestions$ | async) ||
+          !(hasProductsForSuggestions$ | async)
+        "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 sm:mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span class="text-xs sm:text-sm font-medium mt-1 sm:mt-0">Saving</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Content Area -->
+  <!-- Content Area with Grid Layout -->
   <div class="suggestion-content">
-    <!-- Receipt Summary -->
     @if (activeSuggestionTab === 'receipt') { @if (paymentSummary$ | async; as
     summaryItems) { @if (summaryItems.length > 0) {
     <div class="summary-container mb-6">
-      <h3 class="section-title text-xl font-semibold mb-3 text-gray-700">
+      <h3
+        class="section-title text-lg sm:text-xl font-semibold mb-3 text-gray-700"
+      >
         Receipt Summary
       </h3>
-      <ul class="summary-list list-none p-0">
+      <div class="grid gap-2">
         @for (item of summaryItems; track item.name) {
-        <li
-          class="summary-item flex justify-between items-center p-3 mb-2 bg-gray-50 rounded-lg shadow-sm"
+        <div
+          class="grid grid-cols-2 items-center p-3 bg-gray-50 rounded-lg shadow-sm"
         >
-          <span class="summary-name font-medium text-gray-800">{{
+          <span class="font-medium text-gray-800 text-sm sm:text-base">{{
             item.name
           }}</span>
-          <span class="summary-value text-gray-600">
+          <span class="text-gray-600 text-right text-sm sm:text-base">
             @if (item.quantity !== null && item.quantity !== undefined) { @if
             (isItemPriceNaN(item.quantity)) {
             {{ item.quantity }}
@@ -80,92 +126,84 @@
             {{ item.price | currency : "UZS " : "symbol" : "1.0-0" }}
             } }
           </span>
-        </li>
+        </div>
         }
-      </ul>
-    </div>
-    } @else {
-    <div class="text-center p-6 bg-gray-50 rounded-lg shadow">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="mx-auto h-12 w-12 text-gray-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-      <p class="mt-2 text-sm font-medium text-gray-900">
-        No receipt data available.
-      </p>
-      <p class="mt-1 text-sm text-gray-500">
-        Scan a receipt to see the summary and get suggestions.
-      </p>
-    </div>
-    } } @else {
-    <div class="text-center p-6 bg-gray-50 rounded-lg shadow">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="mx-auto h-12 w-12 text-gray-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-      <p class="mt-2 text-sm font-medium text-gray-900">Loading summary...</p>
-    </div>
-    } }
-
-    <!-- AI Suggestions Area -->
-    @if (activeSuggestionTab === 'health' || activeSuggestionTab === 'saving') {
-    @if (isLoadingAiSuggestions$ | async) {
-    <!-- Loading Indicator: Display this first and exclusively if loading -->
-    <div
-      class="loading-indicator text-center p-6 my-4 bg-blue-50 text-blue-700 rounded-lg shadow"
-    >
-      <div class="flex justify-center items-center">
-        <svg
-          class="animate-spin -ml-1 mr-3 h-6 w-6 text-blue-600"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-        <p class="text-lg font-semibold">
-          Fetching fresh suggestions for you...
-        </p>
       </div>
     </div>
     } @else {
-    <!-- Not loading, so check for error or suggestions -->
-    @if (aiError$ | async; as error) {
-    <!-- Error Message: Display this if not loading AND there is an error -->
     <div
-      class="error-message text-center p-4 my-4 bg-red-100 text-red-700 rounded-md"
+      class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow text-center"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-12 w-12 text-gray-400 mb-3"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+      <p class="text-sm font-medium text-gray-900 mb-1">
+        No receipt data available.
+      </p>
+      <p class="text-xs sm:text-sm text-gray-500 mb-4">
+        Scan a receipt to see the summary and get suggestions.
+      </p>
+
+      <button
+        (click)="navigateToScan()"
+        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-1.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+        Scan Receipt
+      </button>
+    </div>
+    } } @else {
+    <div class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow">
+      <div
+        class="w-12 h-12 rounded-full border-t-4 border-b-4 border-blue-500 animate-spin mb-3"
+      ></div>
+      <p class="text-sm font-medium text-gray-900">Loading summary...</p>
+    </div>
+    } } @if (activeSuggestionTab === 'health' || activeSuggestionTab ===
+    'saving') { @if (isLoadingAiSuggestions$ | async) {
+    <div class="grid place-items-center p-8">
+      <div class="text-center">
+        <div
+          class="w-12 h-12 mx-auto rounded-full border-t-4 border-b-4 border-blue-500 animate-spin"
+        ></div>
+        <div class="mt-4 text-sm text-gray-600 font-medium">
+          Getting smart suggestions...
+        </div>
+      </div>
+    </div>
+    } @else { @if (aiError$ | async; as error) {
+    <div
+      class="grid p-4 my-4 bg-red-100 text-red-700 rounded-md place-items-center text-center"
     >
       <p>Error: {{ error }}</p>
       @if (error === 'OpenRouter API key is not configured.' ||
@@ -173,97 +211,132 @@
       <p>Please ensure the OpenRouter API key is correctly set.</p>
       }
     </div>
-    } @else {
-    <!-- No error, now check for suggestions. This @if is primary in this @else block. -->
-    @if (aiSuggestions$ | async; as suggestions) {
-    <!-- Suggestions are available (i.e., suggestions object is not null, not loading, no error) -->
-    @if (activeSuggestionTab === 'health') { @if
+    } @else { @if (aiSuggestions$ | async; as suggestions) { @if
+    (activeSuggestionTab === 'health') { @if
     (suggestions.healthSuggestions.length) {
     <div class="ai-suggestions-section mb-6">
-      <h3 class="section-title text-xl font-semibold mb-3 text-green-700">
+      <h3
+        class="section-title text-lg sm:text-xl font-semibold mb-3 text-green-700"
+      >
         Health Suggestions
       </h3>
-      <ul class="ai-suggestions-list list-none p-0 space-y-3">
+      <div class="grid gap-3">
         @for (suggestion of suggestions.healthSuggestions; track $index) {
-        <li
-          class="text-gray-800 p-3 bg-green-50 rounded-lg shadow-sm"
+        <div
+          class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-green-500"
           [innerHTML]="suggestion | markdown"
-        ></li>
+        ></div>
         }
-      </ul>
+      </div>
     </div>
     } @else {
-    <!-- No Health Suggestions (but AI call was successful and returned an object) -->
-    <div class="text-gray-500 italic p-3 bg-gray-50 rounded-lg">
-      No specific health suggestions available for these items at the moment.
+    <div
+      class="grid grid-cols-[auto_1fr] gap-2 items-center p-6 bg-white rounded-lg shadow-sm"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 text-green-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span class="text-gray-600 text-sm"
+        >No health suggestions available for these items.</span
+      >
     </div>
     } } @if (activeSuggestionTab === 'saving') { @if
     (suggestions.savingSuggestions.length) {
     <div class="ai-suggestions-section mb-6">
-      <h3 class="section-title text-xl font-semibold mb-3 text-orange-700">
+      <h3
+        class="section-title text-lg sm:text-xl font-semibold mb-3 text-orange-700"
+      >
         Saving Suggestions
       </h3>
-      <ul class="ai-suggestions-list list-none p-0 space-y-3">
+      <div class="grid gap-3">
         @for (suggestion of suggestions.savingSuggestions; track $index) {
-        <li
-          class="text-gray-800 p-3 bg-orange-50 rounded-lg shadow-sm"
+        <div
+          class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-orange-500"
           [innerHTML]="suggestion | markdown"
-        ></li>
+        ></div>
         }
-      </ul>
+      </div>
     </div>
     } @else {
-    <!-- No Saving Suggestions (but AI call was successful and returned an object) -->
-    <div class="text-gray-500 italic p-3 bg-gray-50 rounded-lg">
-      No specific saving suggestions available for these items at the moment.
-    </div>
-    } } } @else {
-    <!-- Fallback: Not loading, no error, and aiSuggestions$ is null or hasn't emitted a non-null value -->
-    @if (hasProductsForSuggestions$ | async) {
-    <!-- Products are available, but no suggestions yet (e.g. AI hasn't run or returned empty/null) -->
-    <div class="text-center p-6 bg-gray-50 rounded-lg shadow">
+    <div
+      class="grid grid-cols-[auto_1fr] gap-2 items-center p-6 bg-white rounded-lg shadow-sm"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="mx-auto h-12 w-12 text-gray-400"
+        class="h-6 w-6 text-orange-500"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        stroke-width="2"
       >
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span class="text-gray-600 text-sm"
+        >No saving suggestions available for these items.</span
+      >
+    </div>
+    } } } @else { @if (hasProductsForSuggestions$ | async) {
+    <div
+      class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow text-center"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-12 w-12 text-gray-400 mb-3"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
           d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.79 4 4s-1.79 4-4 4c-1.742 0-3.223-.835-3.772-2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      <p class="mt-2 text-sm font-medium text-gray-900">
+      <p class="text-sm font-medium text-gray-900 mb-1">
         Analyzing your items for suggestions...
       </p>
-      <p class="mt-1 text-sm text-gray-500">
-        Suggestions will appear here shortly if items are available.
+      <p class="text-xs sm:text-sm text-gray-500">
+        Suggestions will appear here shortly.
       </p>
     </div>
     } @else {
-    <!-- No products at all to get suggestions for -->
-    <div class="text-center p-6 bg-gray-50 rounded-lg shadow">
+    <div
+      class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow text-center"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="mx-auto h-12 w-12 text-gray-400"
+        class="h-12 w-12 text-gray-400 mb-3"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        stroke-width="2"
       >
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
+          stroke-width="2"
           d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
         />
       </svg>
-      <p class="mt-2 text-sm font-medium text-gray-900">
+      <p class="text-sm font-medium text-gray-900 mb-1">
         No receipt data to analyze.
       </p>
-      <p class="mt-1 text-sm text-gray-500">
+      <p class="text-xs sm:text-sm text-gray-500">
         Scan a receipt first to get AI-powered suggestions.
       </p>
     </div>

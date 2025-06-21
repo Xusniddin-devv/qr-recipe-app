@@ -7,6 +7,9 @@ import {
   Inject,
   PLATFORM_ID,
   OnDestroy,
+  OnInit,
+  inject,
+  signal,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import jsQR from 'jsqr';
@@ -14,16 +17,36 @@ import { CheckService, ReceiptData } from '../../core/check.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Subject, from, throwError } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  ScanHistoryService,
+  ScanRecord,
+} from '../../core/scan-history.service';
+import { ScannerStateService } from '../../core/scanner-state.service';
+
+// Import PrimeNG components
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-qr-scanner',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, ButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './qr-scanner.component.html',
 })
-export class QrScannerComponent implements OnDestroy {
+export class QrScannerComponent implements OnInit, OnDestroy {
   @ViewChild('video') videoEl!: ElementRef<HTMLVideoElement>;
   @ViewChild('canvas') canvasEl!: ElementRef<HTMLCanvasElement>;
+
+  // Services
+  private cd = inject(ChangeDetectorRef);
+  private check = inject(CheckService);
+  private router = inject(Router);
+  private scanHistoryService = inject(ScanHistoryService);
+  private scannerStateService = inject(ScannerStateService);
+
+  // State signals
+  recentScans = signal<ScanRecord[]>([]);
+  isLoading = signal(false);
 
   productsData: ReceiptData | null = null;
   showResults = false;
@@ -43,13 +66,32 @@ export class QrScannerComponent implements OnDestroy {
   private animationFrameId?: number;
   private destroy$ = new Subject<void>();
 
-  constructor(
-    @Inject(PLATFORM_ID) platformId: any,
-    private cd: ChangeDetectorRef,
-    private check: CheckService,
-    private router: Router
-  ) {
+  constructor(@Inject(PLATFORM_ID) platformId: any) {
     this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  ngOnInit(): void {
+    this.loadRecentScans();
+  }
+
+  loadRecentScans(): void {
+    this.isLoading.set(true);
+    this.scanHistoryService.getRecentScans().subscribe({
+      next: (scans) => {
+        this.recentScans.set(scans);
+        this.isLoading.set(false);
+        this.cd.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to load recent scans', err);
+        this.isLoading.set(false);
+        this.cd.markForCheck();
+      },
+    });
+  }
+
+  formatScanDate(timestamp: number): string {
+    return this.scanHistoryService.formatScanDate(timestamp);
   }
 
   scanLoop() {
@@ -74,12 +116,14 @@ export class QrScannerComponent implements OnDestroy {
     this.decodedUrl = null;
     this.hasError = false;
     this.status$.next('');
+    this.scannerStateService.setScanningState(true);
     this.cd.markForCheck();
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       this.status$.next('Camera API not available.');
       this.hasError = true;
       this.streamActive = false;
+      this.scannerStateService.setScanningState(false);
       this.cd.detectChanges();
       return;
     }
@@ -114,6 +158,7 @@ export class QrScannerComponent implements OnDestroy {
           this.status$.next(`❌ ${errorMessage}`);
           this.hasError = true;
           this.streamActive = false;
+          this.scannerStateService.setScanningState(false);
           this.cd.detectChanges();
           return throwError(() => new Error(errorMessage));
         })
@@ -132,6 +177,7 @@ export class QrScannerComponent implements OnDestroy {
             this.hasError = true;
           }
           this.streamActive = false;
+          this.scannerStateService.setScanningState(false);
           this.cd.detectChanges();
         },
       });
@@ -151,6 +197,7 @@ export class QrScannerComponent implements OnDestroy {
     this.torchOn = false;
     this.streamActive = false;
     this.hasError = false;
+    this.scannerStateService.setScanningState(false);
 
     if (this.track) {
       this.track.stop();
@@ -162,6 +209,22 @@ export class QrScannerComponent implements OnDestroy {
     }
 
     this.cd.markForCheck();
+  }
+
+  saveScan(url: string, success: boolean): void {
+    const scan: ScanRecord = {
+      url: url,
+      timestamp: Date.now(),
+      success: success,
+    };
+
+    this.scanHistoryService.addScan(scan).subscribe({
+      next: () => {
+        // Refresh the scan list after saving
+        this.loadRecentScans();
+      },
+      error: (err) => console.error('Failed to save scan', err),
+    });
   }
 
   private scanFrame() {
@@ -224,6 +287,10 @@ export class QrScannerComponent implements OnDestroy {
               this.showResults = true;
               this.status$.next('Receipt processed, redirecting...');
               this.hasError = false;
+
+              // Save successful scan
+              this.saveScan(this.decodedUrl!, true);
+
               this.cd.detectChanges();
 
               setTimeout(() => {
@@ -232,6 +299,7 @@ export class QrScannerComponent implements OnDestroy {
                   this.track = undefined;
                 }
                 this.streamActive = false;
+                this.scannerStateService.setScanningState(false);
                 this.showStatus = false;
                 this.cd.detectChanges();
                 this.router.navigate(['/pantry']);
@@ -241,6 +309,12 @@ export class QrScannerComponent implements OnDestroy {
               console.error('Error processing receipt:', err);
               this.status$.next('Error processing receipt.');
               this.hasError = true;
+
+              // Save failed scan
+              if (this.decodedUrl) {
+                this.saveScan(this.decodedUrl, false);
+              }
+
               this.cd.detectChanges();
             },
           });

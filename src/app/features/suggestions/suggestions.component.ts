@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { AsyncPipe, CurrencyPipe, NgClass } from '@angular/common';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { CheckService, Product } from '../../core/check.service';
 import { Observable, Subject } from 'rxjs';
 import { tap, takeUntil, map, startWith } from 'rxjs/operators';
@@ -10,7 +11,7 @@ import {
 import { MarkdownPipe } from '../../../pipes/markdownPipe';
 
 @Component({
-  imports: [AsyncPipe, NgClass, CurrencyPipe, MarkdownPipe],
+  imports: [AsyncPipe, CurrencyPipe, MarkdownPipe],
   selector: 'app-suggestions',
   templateUrl: './suggestions.component.html',
   standalone: true,
@@ -18,6 +19,7 @@ import { MarkdownPipe } from '../../../pipes/markdownPipe';
 export class SuggestionsComponent implements OnInit, OnDestroy {
   private checkService = inject(CheckService);
   private aiSuggestionService = inject(AiSuggestionService);
+  private router = inject(Router);
   private destroy$ = new Subject<void>();
 
   paymentSummary$: Observable<Product[]>;
@@ -89,6 +91,10 @@ export class SuggestionsComponent implements OnInit, OnDestroy {
 
   setActiveTab(tab: 'receipt' | 'health' | 'saving'): void {
     this.activeSuggestionTab = tab;
+  }
+
+  navigateToScan(): void {
+    this.router.navigate(['/scan']);
   }
 
   ngOnDestroy(): void {
