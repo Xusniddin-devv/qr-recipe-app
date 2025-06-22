@@ -9,9 +9,17 @@ import {
   AiSuggestionService,
 } from '../../core/ai.suggestions.service';
 import { MarkdownPipe } from '../../../pipes/markdownPipe';
+import { ReceiptSummaryComponent } from './components/receipt-summary/receipt-summary.component';
+import { HealthSuggestionsComponent } from './components/health-suggestions/health-suggestions.component';
+import { SavingSuggestionsComponent } from './components/saving-suggestions/saving-suggestions.component';
 
 @Component({
-  imports: [AsyncPipe, CurrencyPipe, MarkdownPipe],
+  imports: [
+    AsyncPipe,
+    ReceiptSummaryComponent,
+    HealthSuggestionsComponent,
+    SavingSuggestionsComponent,
+  ],
   selector: 'app-suggestions',
   templateUrl: './suggestions.component.html',
   standalone: true,

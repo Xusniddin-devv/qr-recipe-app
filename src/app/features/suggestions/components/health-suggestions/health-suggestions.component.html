@@ -1,0 +1,68 @@
+<!-- health-suggestions.component.html -->
+@if (isLoading) {
+<app-loading-indicator
+  message="Getting smart suggestions..."
+></app-loading-indicator>
+} @else if (error) {
+<div
+  class="grid p-4 my-4 bg-red-100 text-red-700 rounded-md place-items-center text-center"
+>
+  <p>Error: {{ error }}</p>
+  @if (error === 'OpenRouter API key is not configured.' ||
+  error?.includes('Unauthorized')) {
+  <p>Please ensure the OpenRouter API key is correctly set.</p>
+  }
+</div>
+} @else if (!suggestions) { @if (hasProducts) {
+<app-empty-state
+  icon="analysis"
+  title="Analyzing your items for suggestions..."
+  description="Suggestions will appear here shortly."
+>
+</app-empty-state>
+} @else {
+<app-empty-state
+  icon="receipt-missing"
+  title="No receipt data to analyze."
+  description="Scan a receipt first to get AI-powered suggestions."
+>
+</app-empty-state>
+} } @else if (suggestions.healthSuggestions.length === 0) {
+<div
+  class="grid grid-cols-[auto_1fr] gap-2 items-center p-6 bg-white rounded-lg shadow-sm"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 text-green-500"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span class="text-gray-600 text-sm"
+    >No health suggestions available for these items.</span
+  >
+</div>
+} @else {
+<div class="ai-suggestions-section mb-6">
+  <h3
+    class="section-title text-lg sm:text-xl font-semibold mb-3 text-green-700"
+  >
+    Health Suggestions
+  </h3>
+  <div class="grid gap-3">
+    @for (suggestion of suggestions.healthSuggestions; track $index) {
+    <div
+      class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-green-500"
+      [innerHTML]="suggestion | markdown"
+    ></div>
+    }
+  </div>
+</div>
+}

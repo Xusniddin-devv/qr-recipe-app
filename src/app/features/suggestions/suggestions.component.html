@@ -95,251 +95,30 @@
     </div>
   </div>
 
-  <!-- Content Area with Grid Layout -->
+  <!-- Content Area with Child Components -->
   <div class="suggestion-content">
-    @if (activeSuggestionTab === 'receipt') { @if (paymentSummary$ | async; as
-    summaryItems) { @if (summaryItems.length > 0) {
-    <div class="summary-container mb-6">
-      <h3
-        class="section-title text-lg sm:text-xl font-semibold mb-3 text-gray-700"
-      >
-        Receipt Summary
-      </h3>
-      <div class="grid gap-2">
-        @for (item of summaryItems; track item.name) {
-        <div
-          class="grid grid-cols-2 items-center p-3 bg-gray-50 rounded-lg shadow-sm"
-        >
-          <span class="font-medium text-gray-800 text-sm sm:text-base">{{
-            item.name
-          }}</span>
-          <span class="text-gray-600 text-right text-sm sm:text-base">
-            @if (item.quantity !== null && item.quantity !== undefined) { @if
-            (isItemPriceNaN(item.quantity)) {
-            {{ item.quantity }}
-            } @else {
-            {{ item.quantity | currency : "UZS " : "symbol" : "1.0-0" }}
-            } } @else if (item.price !== null && item.price !== undefined) { @if
-            (isItemPriceNaN(item.price)) {
-            {{ item.price }}
-            } @else {
-            {{ item.price | currency : "UZS " : "symbol" : "1.0-0" }}
-            } }
-          </span>
-        </div>
-        }
-      </div>
-    </div>
-    } @else {
-    <div
-      class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow text-center"
+    @if (activeSuggestionTab === 'receipt') {
+    <app-receipt-summary
+      [summary]="paymentSummary$ | async"
+      (scanClicked)="navigateToScan()"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-12 w-12 text-gray-400 mb-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-      <p class="text-sm font-medium text-gray-900 mb-1">
-        No receipt data available.
-      </p>
-      <p class="text-xs sm:text-sm text-gray-500 mb-4">
-        Scan a receipt to see the summary and get suggestions.
-      </p>
-
-      <button
-        (click)="navigateToScan()"
-        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 mr-1.5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-        Scan Receipt
-      </button>
-    </div>
-    } } @else {
-    <div class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow">
-      <div
-        class="w-12 h-12 rounded-full border-t-4 border-b-4 border-blue-500 animate-spin mb-3"
-      ></div>
-      <p class="text-sm font-medium text-gray-900">Loading summary...</p>
-    </div>
-    } } @if (activeSuggestionTab === 'health' || activeSuggestionTab ===
-    'saving') { @if (isLoadingAiSuggestions$ | async) {
-    <div class="grid place-items-center p-8">
-      <div class="text-center">
-        <div
-          class="w-12 h-12 mx-auto rounded-full border-t-4 border-b-4 border-blue-500 animate-spin"
-        ></div>
-        <div class="mt-4 text-sm text-gray-600 font-medium">
-          Getting smart suggestions...
-        </div>
-      </div>
-    </div>
-    } @else { @if (aiError$ | async; as error) {
-    <div
-      class="grid p-4 my-4 bg-red-100 text-red-700 rounded-md place-items-center text-center"
+    </app-receipt-summary>
+    } @if (activeSuggestionTab === 'health') {
+    <app-health-suggestions
+      [suggestions]="aiSuggestions$ | async"
+      [isLoading]="isLoadingAiSuggestions$ | async"
+      [hasProducts]="hasProductsForSuggestions$ | async"
+      [error]="aiError$ | async"
     >
-      <p>Error: {{ error }}</p>
-      @if (error === 'OpenRouter API key is not configured.' ||
-      error?.includes('Unauthorized')) {
-      <p>Please ensure the OpenRouter API key is correctly set.</p>
-      }
-    </div>
-    } @else { @if (aiSuggestions$ | async; as suggestions) { @if
-    (activeSuggestionTab === 'health') { @if
-    (suggestions.healthSuggestions.length) {
-    <div class="ai-suggestions-section mb-6">
-      <h3
-        class="section-title text-lg sm:text-xl font-semibold mb-3 text-green-700"
-      >
-        Health Suggestions
-      </h3>
-      <div class="grid gap-3">
-        @for (suggestion of suggestions.healthSuggestions; track $index) {
-        <div
-          class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-green-500"
-          [innerHTML]="suggestion | markdown"
-        ></div>
-        }
-      </div>
-    </div>
-    } @else {
-    <div
-      class="grid grid-cols-[auto_1fr] gap-2 items-center p-6 bg-white rounded-lg shadow-sm"
+    </app-health-suggestions>
+    } @if (activeSuggestionTab === 'saving') {
+    <app-saving-suggestions
+      [suggestions]="aiSuggestions$ | async"
+      [isLoading]="isLoadingAiSuggestions$ | async"
+      [hasProducts]="hasProductsForSuggestions$ | async"
+      [error]="aiError$ | async"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 text-green-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span class="text-gray-600 text-sm"
-        >No health suggestions available for these items.</span
-      >
-    </div>
-    } } @if (activeSuggestionTab === 'saving') { @if
-    (suggestions.savingSuggestions.length) {
-    <div class="ai-suggestions-section mb-6">
-      <h3
-        class="section-title text-lg sm:text-xl font-semibold mb-3 text-orange-700"
-      >
-        Saving Suggestions
-      </h3>
-      <div class="grid gap-3">
-        @for (suggestion of suggestions.savingSuggestions; track $index) {
-        <div
-          class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-orange-500"
-          [innerHTML]="suggestion | markdown"
-        ></div>
-        }
-      </div>
-    </div>
-    } @else {
-    <div
-      class="grid grid-cols-[auto_1fr] gap-2 items-center p-6 bg-white rounded-lg shadow-sm"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 text-orange-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span class="text-gray-600 text-sm"
-        >No saving suggestions available for these items.</span
-      >
-    </div>
-    } } } @else { @if (hasProductsForSuggestions$ | async) {
-    <div
-      class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow text-center"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-12 w-12 text-gray-400 mb-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.79 4 4s-1.79 4-4 4c-1.742 0-3.223-.835-3.772-2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <p class="text-sm font-medium text-gray-900 mb-1">
-        Analyzing your items for suggestions...
-      </p>
-      <p class="text-xs sm:text-sm text-gray-500">
-        Suggestions will appear here shortly.
-      </p>
-    </div>
-    } @else {
-    <div
-      class="grid place-items-center p-6 bg-gray-50 rounded-lg shadow text-center"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-12 w-12 text-gray-400 mb-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-        />
-      </svg>
-      <p class="text-sm font-medium text-gray-900 mb-1">
-        No receipt data to analyze.
-      </p>
-      <p class="text-xs sm:text-sm text-gray-500">
-        Scan a receipt first to get AI-powered suggestions.
-      </p>
-    </div>
-    } } } } }
+    </app-saving-suggestions>
+    }
   </div>
 </div>

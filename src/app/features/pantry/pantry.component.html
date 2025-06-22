@@ -1,74 +1,166 @@
 <div class="p-5 max-w-3xl mx-auto">
-  <ng-container *ngIf="products$ | async as products">
-    <div *ngIf="products.length" class="bg-white rounded-lg shadow-sm">
-      <h3
-        class="mt-0 py-3 px-4 bg-gray-100 border-b border-gray-200 text-lg font-medium"
-      >
-        Products
-      </h3>
-      <ul class="list-none p-0 m-0">
-        <li
-          *ngFor="let product of products"
-          class="p-3 border-b border-gray-200"
-        >
+  <!-- Products Section -->
+  @if (products$ | async; as products) { @if (products.length) {
+  <div class="bg-white rounded-lg shadow-sm">
+    <h3
+      class="mt-0 py-3 px-4 bg-gray-100 border-b border-gray-200 text-lg font-medium"
+    >
+      Products
+    </h3>
+    <ul class="list-none p-0 m-0">
+      @for (product of products; track product.name) {
+      <li class="border-b border-gray-200">
+        <!-- Product Info -->
+        <div class="p-3">
           <div class="flex justify-between items-start">
             <div class="flex flex-col">
-              <span class="font-medium text-gray-800">{{ product.name }}</span>
+              <div class="flex items-center">
+                <span class="font-medium text-gray-800">{{
+                  product.name
+                }}</span>
+                @if (hasDiscount(product.name)) {
+                <span
+                  class="ml-2 px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full"
+                >
+                  Discount
+                </span>
+                }
+              </div>
               <span class="text-sm text-gray-500"
                 >Qty: {{ product.quantity || 1 }}</span
               >
             </div>
             <div class="flex flex-col items-end">
-              <span class="text-sm text-gray-500">{{
-                product.price / product.quantity | currency : "UZS "
-              }}</span>
-              <span class="text-blue-600 font-medium">{{
-                product.price | currency : "UZS "
-              }}</span>
+              @if (hasDiscount(product.name)) {
+              <!-- Original price (with strikethrough) -->
+              <span class="text-sm text-gray-500 line-through">
+                {{ check.getOriginalPrice(product) | currency : "UZS " }}
+              </span>
+              <!-- Discounted price -->
+              <ng-container
+                *ngIf="
+                  check.getDiscountedPrice(product) | async as discountedPrice
+                "
+              >
+                <span class="text-green-600 font-medium">
+                  {{ discountedPrice | currency : "UZS " }}
+                </span>
+              </ng-container>
+              } @else {
+              <!-- Regular price per unit -->
+              <span class="text-sm text-gray-500">
+                {{ product.price / product.quantity | currency : "UZS " }}
+              </span>
+              <!-- Total price -->
+              <span class="text-blue-600 font-medium">
+                {{ product.price | currency : "UZS " }}
+              </span>
+              }
             </div>
           </div>
-        </li>
-      </ul>
-    </div>
+        </div>
 
-    <div
-      *ngIf="!products.length"
-      class="py-10 px-5 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300"
+        <!-- Discount Info (if applicable) -->
+        @if (hasDiscount(product.name)) {
+        <div class="bg-green-50 border-t border-green-100 px-3 py-2">
+          @for (discount of getDiscountsForProduct(product.name); track
+          discount.discountName) {
+          <div class="flex justify-between text-sm">
+            <span class="text-green-700">{{ discount.discountName }}</span>
+            <span class="font-medium text-green-700">
+              -{{ discount.discountValue | currency : "UZS " }}
+            </span>
+          </div>
+          } @if (getDiscountsForProduct(product.name).length > 1) {
+          <div
+            class="flex justify-between text-sm mt-1 pt-1 border-t border-green-100"
+          >
+            <span class="font-medium text-green-800">Total discount</span>
+            <span class="font-medium text-green-800">
+              -{{ getTotalDiscountAmount(product.name) | currency : "UZS " }}
+            </span>
+          </div>
+          }
+        </div>
+        }
+      </li>
+      }
+    </ul>
+  </div>
+  } @else {
+  <div
+    class="py-10 px-5 text-center text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300"
+  >
+    No products in your pantry yet. Scan a receipt to add items.
+  </div>
+  } }
+
+  <!-- Receipt Summary Section -->
+  @if (summary$ | async; as summary) { @if (summary.length) {
+  <div class="mt-6 bg-white rounded-lg shadow-sm">
+    <h3
+      class="mt-0 py-3 px-4 bg-gray-100 border-b border-gray-200 text-lg font-medium"
     >
-      No products in your pantry yet. Scan a receipt to add items.
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="summary$ | async as summary">
-    <div *ngIf="summary.length" class="mt-6 bg-white rounded-lg shadow-sm">
-      <h3
-        class="mt-0 py-3 px-4 bg-gray-100 border-b border-gray-200 text-lg font-medium"
+      Receipt Summary
+    </h3>
+    <ul class="list-none p-0">
+      @for (item of summary; track item.name; let last = $last) {
+      <li
+        class="flex justify-between py-3 px-4 border-b border-gray-200"
+        [class.border-b-0]="last"
+        [class.font-bold]="last"
       >
-        Receipt Summary
-      </h3>
-      <ul class="list-none p-0">
-        <li
-          *ngFor="let item of summary; let last = last"
-          class="flex justify-between py-3 px-4 border-b border-gray-200"
-          [ngClass]="{ 'border-b-0 font-bold': last }"
-        >
-          <span>{{ item.name }}</span>
-          <span>
-            <ng-container
-              *ngIf="item.price !== null && item.price !== undefined"
-            >
-              <ng-container
-                *ngIf="isItemPriceNaN(item.price); else priceNumber"
-              >
-                {{ item.price }}
-              </ng-container>
-              <ng-template #priceNumber>
-                {{ item.price | currency : "UZS " }}
-              </ng-template>
-            </ng-container>
-          </span>
-        </li>
-      </ul>
+        <span>{{ item.name }}</span>
+        <span>
+          @if (item.price !== null && item.price !== undefined) { @if
+          (isItemPriceNaN(item.price)) {
+          {{ item.price }}
+          } @else {
+          {{ item.price | currency : "UZS " }}
+          } }
+        </span>
+      </li>
+      }
+    </ul>
+  </div>
+  } }
+
+  <!-- Total Discounts Section -->
+  @if (discounts$ | async; as discounts) { @if (discounts.length) {
+  <div class="mt-6 bg-white rounded-lg shadow-sm">
+    <h3
+      class="mt-0 py-3 px-4 bg-gray-100 border-b border-gray-200 text-lg font-medium text-green-700"
+    >
+      Discounts Summary
+    </h3>
+    <div class="p-4">
+      <div class="flex justify-between mb-2 text-sm font-medium text-gray-600">
+        <span>Product</span>
+        <span>Discount Amount</span>
+      </div>
+      @for (discount of discounts; track discount.productName +
+      discount.discountName) {
+      <div class="flex justify-between py-2 border-b border-gray-100">
+        <div>
+          <div class="text-gray-800">{{ discount.productName }}</div>
+          <div class="text-xs text-gray-500">{{ discount.discountName }}</div>
+        </div>
+        <span class="text-green-700">{{
+          discount.discountValue | currency : "UZS "
+        }}</span>
+      </div>
+      }
+
+      <!-- Total Discounts -->
+      <div
+        class="flex justify-between py-3 mt-2 font-medium border-t border-gray-200"
+      >
+        <span>Total Savings</span>
+        <span class="text-green-700">
+          {{ calculateTotalDiscounts(discounts) | currency : "UZS " }}
+        </span>
+      </div>
     </div>
-  </ng-container>
+  </div>
+  } }
 </div>

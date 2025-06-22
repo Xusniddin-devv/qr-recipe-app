@@ -29,6 +29,7 @@ const getBrowser = async () => {
   }
   return browserInstance;
 };
+
 const readCheck = async (url) => {
   const browser = await getBrowser();
   const page = await browser.newPage();
@@ -52,129 +53,215 @@ const readCheck = async (url) => {
       // Create a debug function to help identify elements and their properties
       const debugInfo = [];
 
-      // APPROACH 1: Try to get products based on specific markup patterns
+      // IMPROVED APPROACH: Focus specifically on products-row classes
+      const productRows = Array.from(document.querySelectorAll('tr.products-row'));
 
-      // First, try to find product rows with classes that contain 'product' or 'code'
-      const productRows = Array.from(document.querySelectorAll('tr.products-row, tr.code-row, tr[class*="product"]'));
+      // Process the product rows and track discounts
+      const products = [];
+      const discounts = [];
 
-      // APPROACH 2: Try to analyze all table rows and find those with product-like characteristics
-      const allTableRows = Array.from(document.querySelectorAll('table tr'));
+     // Update the discount detection logic in your readCheck function:
 
-      // Collect debug information for understanding table structure
-      allTableRows.forEach((row, idx) => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length >= 2) {
-          debugInfo.push({
-            index: idx,
-            class: row.className,
-            cellCount: cells.length,
-            cellContents: Array.from(cells).map(cell => cell.innerText.trim()),
+// Replace the current discount detection code with this more precise version:
+productRows.forEach((row) => {
+  // Get the product info
+  const productInfo = extractProductInfo(row);
+  if (!productInfo) return;
+
+  // Add the product to the products array
+  products.push(productInfo);
+
+  // Debug info to track what we're finding
+  const rowDebugInfo = {
+    productName: productInfo.name,
+    checkedRows: []
+  };
+
+  // Check if this product has a discount by looking at the next sibling rows
+  let nextRow = row.nextElementSibling;
+  let hasDiscount = false;
+
+  // Look through the next rows until we find another products-row or run out of rows
+  while (nextRow && !nextRow.classList.contains('products-row')) {
+    const rowText = nextRow.textContent.toLowerCase();
+
+    // Add to debug
+    rowDebugInfo.checkedRows.push({
+      className: nextRow.className,
+      text: rowText
+    });
+
+    // ONLY treat 'chegirma/boshqa' rows as discounts
+    // This is the specific identifier for discount rows in the receipt
+    if (rowText.includes('chegirma/boshqa')) {
+      const cells = nextRow.querySelectorAll('td');
+      if (cells.length >= 2) {
+        const discountValueCell = cells[cells.length - 1];
+        let discountValue = discountValueCell?.innerText.trim();
+
+        // Special handling for values like "20000/0"
+        if (discountValue && discountValue.includes('/')) {
+          discountValue = discountValue.split('/')[0].trim();
+        }
+
+        const parsedValue = parseNumericValue(discountValue);
+
+        // Only add non-zero discounts
+        if (parsedValue > 0) {
+          discounts.push({
+            productName: productInfo.name,
+            discountName: "Chegirma/Boshqa",
+            discountValue: parsedValue
+          });
+
+          hasDiscount = true;
+          rowDebugInfo.foundDiscount = {
+            name: "Chegirma/Boshqa",
+            value: discountValue,
+            parsedValue: parsedValue
+          };
+        }
+      }
+    }
+
+    nextRow = nextRow.nextElementSibling;
+  }
+
+  debugInfo.push(rowDebugInfo);
+});
+
+// Also update the fallback approach to be more specific:
+if (discounts.length === 0) {
+  debugInfo.push({ message: "No discounts found with primary method, trying fallback" });
+
+  // Get all rows and look for discounts
+  const allRows = Array.from(document.querySelectorAll('table tbody tr'));
+  let currentProduct = null;
+
+  allRows.forEach(row => {
+    if (row.classList.contains('products-row')) {
+      // This is a product row, update current product
+      const productInfo = extractProductInfo(row);
+      if (productInfo) {
+        currentProduct = productInfo;
+      }
+    } else if (currentProduct && row.textContent.toLowerCase().includes('chegirma/boshqa')) {
+      // This is a discount row for the current product
+      const cells = row.querySelectorAll('td');
+      if (cells.length >= 2) {
+        const discountValueCell = cells[cells.length - 1];
+        let discountValue = discountValueCell?.innerText.trim();
+
+        // Special handling for values like "20000/0"
+        if (discountValue && discountValue.includes('/')) {
+          discountValue = discountValue.split('/')[0].trim();
+        }
+
+        const parsedValue = parseNumericValue(discountValue);
+
+        // Only add non-zero discounts
+        if (parsedValue > 0) {
+          discounts.push({
+            productName: currentProduct.name,
+            discountName: "Chegirma/Boshqa",
+            discountValue: parsedValue
           });
         }
-      });
+      }
+    }
+  });
+}
 
-      // More aggressive structural-based detection
-      const potentialProductRows = allTableRows.filter(row => {
-        // Get all cells
-        const cells = row.querySelectorAll('td');
+      // Fallback approach: Look for discount rows anywhere in the table
+      if (discounts.length === 0) {
+        debugInfo.push({ message: "No discounts found with primary method, trying fallback" });
 
-        // Skip rows that definitely don't have product structure
-        if (cells.length < 2) return false;
+        // Get all rows and look for discounts
+        const allRows = Array.from(document.querySelectorAll('table tbody tr'));
+        let currentProduct = null;
 
-        // For rows with exactly 3 cells (name, quantity, price - most common pattern)
-        if (cells.length === 3) {
-          const nameCell = cells[0]?.innerText?.trim();
-          const quantityCell = cells[1]?.innerText?.trim();
-          const priceCell = cells[2]?.innerText?.trim();
+        allRows.forEach(row => {
+          if (row.classList.contains('products-row')) {
+            // This is a product row, update current product
+            const productInfo = extractProductInfo(row);
+            if (productInfo) {
+              currentProduct = productInfo;
+            }
+          } else if (currentProduct && (row.classList.contains('code-row') || row.textContent.toLowerCase().includes('chegirma') || row.textContent.toLowerCase().includes('boshqa'))) {
+            // This could be a discount row for the current product
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 2) {
+              const discountNameCell = cells[0];
+              const discountValueCell = cells[cells.length - 1];
 
-          // Basic validation
-          if (!nameCell || !quantityCell || !priceCell) return false;
+              const discountName = discountNameCell?.innerText.trim();
+              let discountValue = discountValueCell?.innerText.trim();
 
-          // Price should have digits
-          const containsPrice = /[\d,.]+/.test(priceCell);
+              // Special handling for values like "20000/0"
+              if (discountValue && discountValue.includes('/')) {
+                // Take the first number before the slash
+                discountValue = discountValue.split('/')[0].trim();
+              }
 
-          // Quantity should look numeric
-          const quantityIsNumeric = /^[\d,.]+$/.test(quantityCell);
+              discounts.push({
+                productName: currentProduct.name,
+                discountName: discountName || "Discount",
+                discountValue: parseNumericValue(discountValue)
+              });
 
-          // Skip rows that are likely headers or summary rows
-          const excludePatterns = ['qqs', 'soliq', 'chegirma', 'foiz', 'nomi', 'soni', 'narxi', 'naqd', 'bank', 'jami', 'umumiy'];
-          const isExcluded = excludePatterns.some(pattern =>
-            nameCell.toLowerCase().includes(pattern.toLowerCase()) ||
-            quantityCell.toLowerCase().includes(pattern.toLowerCase())
-          );
-
-          return containsPrice && quantityIsNumeric && !isExcluded;
-        }
-
-        // For rows with 2 cells - might be price in a different format?
-        if (cells.length === 2) {
-          const firstCell = cells[0]?.innerText?.trim();
-          const secondCell = cells[1]?.innerText?.trim();
-
-          // If it looks like a product description + price
-          if (firstCell && secondCell &&
-              !/jami|naqd|bank|total/i.test(firstCell) &&
-              /[\d,.]+/.test(secondCell)) {
-            // Check if this might be a product (has digits in second cell, first cell is descriptive)
-            return firstCell.length > 3 && /[\d,.]+/.test(secondCell);
+              debugInfo.push({
+                message: "Found discount with fallback method",
+                product: currentProduct.name,
+                discount: { name: discountName, value: discountValue }
+              });
+            }
           }
-        }
+        });
+      }
 
-        // Special handling for rows with more than 3 cells
-        if (cells.length > 3) {
-          // Some receipts might split product info across more cells
-          // Try to identify if any cell has price-like formatting
-          const lastCell = cells[cells.length - 1]?.innerText?.trim();
-          const nameCell = cells[0]?.innerText?.trim();
-
-          // If last cell looks like a price and first cell has text
-          return nameCell && /[\d,.]+/.test(lastCell) && !/jami|total|naqd|bank/i.test(nameCell);
-        }
-
-        return false;
-      });
-
-      // Combine our approaches, removing duplicates
-      const allPossibleProductRows = [...new Set([...productRows, ...potentialProductRows])];
-
-      // Process these rows into product objects
-      const products = allPossibleProductRows.map(row => {
-        // Normalize based on number of cells
-        const cells = Array.from(row.querySelectorAll('td'));
-
-        // Skip if not enough cells
+      // Helper function to extract product info from a row
+      function extractProductInfo(row) {
+        const cells = row.querySelectorAll('td');
         if (cells.length < 2) return null;
 
-        // Extract product information based on cell count
+        // Extract product details from cells
         let name, quantityText, priceText;
 
-        if (cells.length === 3) {
-          // Standard 3-column format (name, quantity, price)
-          name = cells[0]?.innerText.trim();
-          quantityText = cells[1]?.innerText.trim();
-          priceText = cells[2]?.innerText.trim();
-        } else if (cells.length === 2) {
-          // 2-column format (name, price)
-          name = cells[0]?.innerText.trim();
-          quantityText = "1"; // Assume quantity of 1
-          priceText = cells[1]?.innerText.trim();
-        } else if (cells.length > 3) {
-          // Multi-column format - assume first is name, last is price
-          name = cells[0]?.innerText.trim();
-          priceText = cells[cells.length - 1]?.innerText.trim();
-
-          // Try to find a quantity cell - often the second last
-          quantityText = cells[cells.length - 2]?.innerText.trim();
-          if (!/^[\d,.]+$/.test(quantityText)) {
-            quantityText = "1"; // Default if no clear quantity
+        // Look for product name in first column with content
+        for (let i = 0; i < cells.length; i++) {
+          const cellText = cells[i]?.innerText.trim();
+          if (cellText && cellText.length > 0) {
+            name = cellText;
+            break;
           }
+        }
+
+        // Look for price in cells with price-sum class
+        const priceCell = row.querySelector('.price-sum');
+        if (priceCell) {
+          priceText = priceCell.innerText.trim();
+        } else {
+          // Fall back to last cell if no price-sum class found
+          priceText = cells[cells.length - 1]?.innerText.trim();
+        }
+
+        // Look for quantity (usually in center-aligned cells)
+        const quantityCell = Array.from(cells).find(cell =>
+          cell.align === 'center' ||
+          cell.getAttribute('align') === 'center'
+        );
+
+        if (quantityCell) {
+          quantityText = quantityCell.innerText.trim();
+        } else {
+          // Default to 1 if no quantity found
+          quantityText = "1";
         }
 
         // Clean and parse the data
         if (name && priceText) {
-          // Handle different number formats
           const cleanedPriceText = priceText.replace(/[,\s]/g, '');
-          const parsedQuantity = quantityText ? parseFloat(quantityText.replace(',', '.')) : 1;
+          const parsedQuantity = parseFloat(quantityText.replace(',', '.'));
 
           return {
             name: name,
@@ -182,30 +269,18 @@ const readCheck = async (url) => {
             price: parseFloat(cleanedPriceText) || 0
           };
         }
-        return null;
-      })
-      .filter(item => item !== null && item.name && item.price > 0)
-      // Remove exclusion keywords that might have slipped through
-      .filter(item => {
-        const excludeKeywords = ['jami', 'naqd', 'bank', 'total', 'qqs', 'soliq'];
-        return !excludeKeywords.some(keyword =>
-          item.name.toLowerCase().includes(keyword.toLowerCase())
-        );
-      })
-      // Filter out specific unwanted product names like codes and receipt metadata
-      .filter(item => {
-        const excludeExactNames = ['shtrix kodi', 'mxik kodi', 'штрих код', 'код'];
-        return !excludeExactNames.some(name =>
-          item.name.toLowerCase() === name.toLowerCase() ||
-          item.name.toLowerCase().includes(name.toLowerCase())
-        );
-      })
-      // Remove duplicates based on name
-      .filter((item, index, self) =>
-        index === self.findIndex(t => t.name === item.name)
-      );
 
-      // Get only the specific summary rows (payment and totals)
+        return null;
+      }
+
+      // Helper function to parse values that might include currency symbols
+      function parseNumericValue(text) {
+        if (!text) return 0;
+        const numericOnly = text.replace(/[^\d.,]/g, '').replace(',', '.');
+        return parseFloat(numericOnly) || 0;
+      }
+
+      // Get summary rows as before
       const summary = [];
       const allRows = Array.from(document.querySelectorAll('table tbody tr'));
 
@@ -252,14 +327,13 @@ const readCheck = async (url) => {
 
       return {
         products,
+        discounts, // Include discounts in the response
         summary,
         debug: {
           debugInfo,
           rowsFound: {
             productRows: productRows.length,
-            potentialRows: potentialProductRows.length,
-            combinedRows: allPossibleProductRows.length,
-            finalProducts: products.length
+            discountRows: discounts.length
           }
         }
       };
@@ -278,6 +352,7 @@ const readCheck = async (url) => {
   }
 };
 
+// Keep only this single route handler for /api/check
 app.get('/api/check', async (req, res) => {
   try {
     const { url } = req.query;
@@ -294,6 +369,7 @@ app.get('/api/check', async (req, res) => {
 
     res.json({
       products: receiptData.products,
+      discounts: receiptData.discounts, // Include discounts in the response
       summary: receiptData.summary
     });
 

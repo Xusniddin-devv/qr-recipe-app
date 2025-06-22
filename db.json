@@ -1,3 +1,23 @@
 {
-  "scans": []
+  "receipts": [],
+  "scans": [
+    {
+      "id": "b2fd",
+      "url": "https://ofd.soliq.uz/check?t=VG343420034086&r=74385&c=20250622185123&s=367502132594",
+      "timestamp": 1750612811762,
+      "success": true
+    },
+    {
+      "id": "3dd6",
+      "url": "https://ofd.soliq.uz/check?t=VG343420034086&r=74385&c=20250622185123&s=367502132594",
+      "timestamp": 1750613406663,
+      "success": true
+    },
+    {
+      "id": "9244",
+      "url": "https://ofd.soliq.uz/check?t=VG343420034086&r=74385&c=20250622185123&s=367502132594",
+      "timestamp": 1750613841541,
+      "success": true
+    }
+  ]
 }
