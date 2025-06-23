@@ -103,6 +103,7 @@
       (scanClicked)="navigateToScan()"
     >
     </app-receipt-summary>
+    <app-receipt-history></app-receipt-history>
     } @if (activeSuggestionTab === 'health') {
     <app-health-suggestions
       [suggestions]="aiSuggestions$ | async"

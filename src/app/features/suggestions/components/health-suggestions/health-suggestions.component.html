@@ -9,7 +9,7 @@
 >
   <p>Error: {{ error }}</p>
   @if (error === 'OpenRouter API key is not configured.' ||
-  error?.includes('Unauthorized')) {
+  error.includes('Unauthorized')) {
   <p>Please ensure the OpenRouter API key is correctly set.</p>
   }
 </div>

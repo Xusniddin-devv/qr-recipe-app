@@ -12,6 +12,7 @@ import { MarkdownPipe } from '../../../pipes/markdownPipe';
 import { ReceiptSummaryComponent } from './components/receipt-summary/receipt-summary.component';
 import { HealthSuggestionsComponent } from './components/health-suggestions/health-suggestions.component';
 import { SavingSuggestionsComponent } from './components/saving-suggestions/saving-suggestions.component';
+import { ReceiptHistoryComponent } from './components/receipt-history/receipt-histrory.component';
 
 @Component({
   imports: [
@@ -19,6 +20,7 @@ import { SavingSuggestionsComponent } from './components/saving-suggestions/savi
     ReceiptSummaryComponent,
     HealthSuggestionsComponent,
     SavingSuggestionsComponent,
+    ReceiptHistoryComponent,
   ],
   selector: 'app-suggestions',
   templateUrl: './suggestions.component.html',

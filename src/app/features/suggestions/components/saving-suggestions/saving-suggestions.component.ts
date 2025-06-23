@@ -2,12 +2,19 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AiSuggestions } from '../../../../core/ai.suggestions.service';
 import { MarkdownPipe } from '../../../../../pipes/markdownPipe';
+import { LoadingIndicatorComponent } from '../../shared/loading-indicator/loading-indicator.component';
+import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-saving-suggestions',
   templateUrl: './saving-suggestions.component.html',
   standalone: true,
-  imports: [CommonModule, MarkdownPipe],
+  imports: [
+    CommonModule,
+    MarkdownPipe,
+    LoadingIndicatorComponent,
+    EmptyStateComponent,
+  ],
 })
 export class SavingSuggestionsComponent {
   @Input() suggestions: AiSuggestions | null = null;

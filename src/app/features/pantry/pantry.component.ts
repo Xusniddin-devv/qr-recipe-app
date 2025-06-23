@@ -8,6 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // Add this for
 
 import { Observable, combineLatest } from 'rxjs'; // Add combineLatest
 import { tap, switchMap, catchError, filter } from 'rxjs/operators'; // Add these operators
+import { UiStateService } from '../../core/ui.state.service';
 
 @Component({
   selector: 'app-pantry',
@@ -21,6 +22,7 @@ export class PantryComponent implements OnInit {
   aiService = inject(AiSuggestionService);
   receiptStorage = inject(ReceiptStorageService); // Add this
   route = inject(ActivatedRoute); // Add this
+  private uiStateService = inject(UiStateService);
 
   // Observables for the template
   products$!: Observable<Product[]>;
@@ -63,6 +65,7 @@ export class PantryComponent implements OnInit {
   ngOnInit(): void {
     // Get scan URL from route params if available
     const scanUrl = this.route.snapshot.queryParams['url'];
+    this.uiStateService.setChromeVisibility(true);
 
     // Simply use the service's observable streams
     this.products$ = this.check.products$.pipe(

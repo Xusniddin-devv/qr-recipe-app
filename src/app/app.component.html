@@ -1,7 +1,9 @@
 <div class="grid grid-rows-[auto_1fr_auto] min-h-screen">
   <!-- Header with Breadcrumbs -->
   @if (showNavigation) {
-  <header class="fixed top-0 left-0 w-full bg-white z-50 px-4 py-3 shadow-sm">
+  <header
+    class="fixed top-0 left-0 w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white z-50 px-4 py-3 shadow-md"
+  >
     <div class="flex items-center justify-between">
       <!-- Left section with logo -->
       <div class="flex items-center">
@@ -42,14 +44,17 @@
 
   <!-- Main Content - Add padding to account for fixed header and footer -->
   <main class="p-4 pb-16" [class.pt-16]="showNavigation">
-    <router-outlet></router-outlet>
+    <div
+      class="grid grid-rows-[auto_1fr_auto] min-h-screen bg-gradient-to-b from-slate-100 to-slate-200"
+    >
+      <router-outlet></router-outlet>
+    </div>
   </main>
 
   <!-- Footer Navigation -->
   @if (showNavigation) {
   <footer
-    class="fixed bottom-0 left-0 w-full p-4 bg-transparent z-50"
-    [class.bg-white]="isScanningActive"
+    class="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white z-50 border-t border-slate-600"
   >
     <nav class="grid grid-cols-3 w-full">
       <a

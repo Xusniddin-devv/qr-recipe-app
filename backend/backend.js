@@ -60,165 +60,6 @@ const readCheck = async (url) => {
       const products = [];
       const discounts = [];
 
-     // Update the discount detection logic in your readCheck function:
-
-// Replace the current discount detection code with this more precise version:
-productRows.forEach((row) => {
-  // Get the product info
-  const productInfo = extractProductInfo(row);
-  if (!productInfo) return;
-
-  // Add the product to the products array
-  products.push(productInfo);
-
-  // Debug info to track what we're finding
-  const rowDebugInfo = {
-    productName: productInfo.name,
-    checkedRows: []
-  };
-
-  // Check if this product has a discount by looking at the next sibling rows
-  let nextRow = row.nextElementSibling;
-  let hasDiscount = false;
-
-  // Look through the next rows until we find another products-row or run out of rows
-  while (nextRow && !nextRow.classList.contains('products-row')) {
-    const rowText = nextRow.textContent.toLowerCase();
-
-    // Add to debug
-    rowDebugInfo.checkedRows.push({
-      className: nextRow.className,
-      text: rowText
-    });
-
-    // ONLY treat 'chegirma/boshqa' rows as discounts
-    // This is the specific identifier for discount rows in the receipt
-    if (rowText.includes('chegirma/boshqa')) {
-      const cells = nextRow.querySelectorAll('td');
-      if (cells.length >= 2) {
-        const discountValueCell = cells[cells.length - 1];
-        let discountValue = discountValueCell?.innerText.trim();
-
-        // Special handling for values like "20000/0"
-        if (discountValue && discountValue.includes('/')) {
-          discountValue = discountValue.split('/')[0].trim();
-        }
-
-        const parsedValue = parseNumericValue(discountValue);
-
-        // Only add non-zero discounts
-        if (parsedValue > 0) {
-          discounts.push({
-            productName: productInfo.name,
-            discountName: "Chegirma/Boshqa",
-            discountValue: parsedValue
-          });
-
-          hasDiscount = true;
-          rowDebugInfo.foundDiscount = {
-            name: "Chegirma/Boshqa",
-            value: discountValue,
-            parsedValue: parsedValue
-          };
-        }
-      }
-    }
-
-    nextRow = nextRow.nextElementSibling;
-  }
-
-  debugInfo.push(rowDebugInfo);
-});
-
-// Also update the fallback approach to be more specific:
-if (discounts.length === 0) {
-  debugInfo.push({ message: "No discounts found with primary method, trying fallback" });
-
-  // Get all rows and look for discounts
-  const allRows = Array.from(document.querySelectorAll('table tbody tr'));
-  let currentProduct = null;
-
-  allRows.forEach(row => {
-    if (row.classList.contains('products-row')) {
-      // This is a product row, update current product
-      const productInfo = extractProductInfo(row);
-      if (productInfo) {
-        currentProduct = productInfo;
-      }
-    } else if (currentProduct && row.textContent.toLowerCase().includes('chegirma/boshqa')) {
-      // This is a discount row for the current product
-      const cells = row.querySelectorAll('td');
-      if (cells.length >= 2) {
-        const discountValueCell = cells[cells.length - 1];
-        let discountValue = discountValueCell?.innerText.trim();
-
-        // Special handling for values like "20000/0"
-        if (discountValue && discountValue.includes('/')) {
-          discountValue = discountValue.split('/')[0].trim();
-        }
-
-        const parsedValue = parseNumericValue(discountValue);
-
-        // Only add non-zero discounts
-        if (parsedValue > 0) {
-          discounts.push({
-            productName: currentProduct.name,
-            discountName: "Chegirma/Boshqa",
-            discountValue: parsedValue
-          });
-        }
-      }
-    }
-  });
-}
-
-      // Fallback approach: Look for discount rows anywhere in the table
-      if (discounts.length === 0) {
-        debugInfo.push({ message: "No discounts found with primary method, trying fallback" });
-
-        // Get all rows and look for discounts
-        const allRows = Array.from(document.querySelectorAll('table tbody tr'));
-        let currentProduct = null;
-
-        allRows.forEach(row => {
-          if (row.classList.contains('products-row')) {
-            // This is a product row, update current product
-            const productInfo = extractProductInfo(row);
-            if (productInfo) {
-              currentProduct = productInfo;
-            }
-          } else if (currentProduct && (row.classList.contains('code-row') || row.textContent.toLowerCase().includes('chegirma') || row.textContent.toLowerCase().includes('boshqa'))) {
-            // This could be a discount row for the current product
-            const cells = row.querySelectorAll('td');
-            if (cells.length >= 2) {
-              const discountNameCell = cells[0];
-              const discountValueCell = cells[cells.length - 1];
-
-              const discountName = discountNameCell?.innerText.trim();
-              let discountValue = discountValueCell?.innerText.trim();
-
-              // Special handling for values like "20000/0"
-              if (discountValue && discountValue.includes('/')) {
-                // Take the first number before the slash
-                discountValue = discountValue.split('/')[0].trim();
-              }
-
-              discounts.push({
-                productName: currentProduct.name,
-                discountName: discountName || "Discount",
-                discountValue: parseNumericValue(discountValue)
-              });
-
-              debugInfo.push({
-                message: "Found discount with fallback method",
-                product: currentProduct.name,
-                discount: { name: discountName, value: discountValue }
-              });
-            }
-          }
-        });
-      }
-
       // Helper function to extract product info from a row
       function extractProductInfo(row) {
         const cells = row.querySelectorAll('td');
@@ -278,6 +119,121 @@ if (discounts.length === 0) {
         if (!text) return 0;
         const numericOnly = text.replace(/[^\d.,]/g, '').replace(',', '.');
         return parseFloat(numericOnly) || 0;
+      }
+
+      productRows.forEach((row) => {
+        // Get the product info
+        const productInfo = extractProductInfo(row);
+        if (!productInfo) return;
+
+        // Add the product to the products array
+        products.push(productInfo);
+
+        // Debug info to track what we're finding
+        const rowDebugInfo = {
+          productName: productInfo.name,
+          checkedRows: []
+        };
+
+        // Check if this product has a discount by looking at the next sibling rows
+        let nextRow = row.nextElementSibling;
+        let hasDiscount = false;
+
+        // Look through the next rows until we find another products-row or run out of rows
+        while (nextRow && !nextRow.classList.contains('products-row')) {
+          const rowText = nextRow.textContent.toLowerCase();
+
+          // Add to debug
+          rowDebugInfo.checkedRows.push({
+            className: nextRow.className,
+            text: rowText
+          });
+
+          // ONLY treat 'chegirma/boshqa' rows as discounts
+          // This is the specific identifier for discount rows in the receipt
+          if (rowText.includes('chegirma/boshqa')) {
+            const cells = nextRow.querySelectorAll('td');
+            if (cells.length >= 2) {
+              const discountValueCell = cells[cells.length - 1];
+              let discountValue = discountValueCell?.innerText.trim();
+
+              // Special handling for values like "20000/0"
+              if (discountValue && discountValue.includes('/')) {
+                discountValue = discountValue.split('/')[0].trim();
+              }
+
+              const parsedValue = parseNumericValue(discountValue);
+
+              // Only add non-zero discounts
+              if (parsedValue > 0) {
+                discounts.push({
+                  productName: productInfo.name,
+                  discountName: "Chegirma/Boshqa",
+                  discountValue: parsedValue
+                });
+
+                hasDiscount = true;
+                rowDebugInfo.foundDiscount = {
+                  name: "Chegirma/Boshqa",
+                  value: discountValue,
+                  parsedValue: parsedValue
+                };
+              }
+            }
+          }
+
+          nextRow = nextRow.nextElementSibling;
+        }
+
+        debugInfo.push(rowDebugInfo);
+      });
+
+      // Fallback approach: Look for discount rows anywhere in the table
+      if (discounts.length === 0) {
+        debugInfo.push({ message: "No discounts found with primary method, trying fallback" });
+
+        // Get all rows and look for discounts
+        const allRows = Array.from(document.querySelectorAll('table tbody tr'));
+        let currentProduct = null;
+
+        allRows.forEach(row => {
+          if (row.classList.contains('products-row')) {
+            // This is a product row, update current product
+            const productInfo = extractProductInfo(row);
+            if (productInfo) {
+              currentProduct = productInfo;
+            }
+          } else if (currentProduct && row.textContent.toLowerCase().includes('chegirma/boshqa')) {
+            // This is a discount row for the current product
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 2) {
+              const discountValueCell = cells[cells.length - 1];
+              let discountValue = discountValueCell?.innerText.trim();
+
+              // Special handling for values like "20000/0"
+              if (discountValue && discountValue.includes('/')) {
+                discountValue = discountValue.split('/')[0].trim();
+              }
+
+              const parsedValue = parseNumericValue(discountValue);
+
+              // Only add non-zero discounts
+              if (parsedValue > 0) {
+                discounts.push({
+                  productName: currentProduct.name,
+                  discountName: "Chegirma/Boshqa",
+                  discountValue: parsedValue
+                });
+
+                debugInfo.push({
+                  message: "Found discount with fallback method",
+                  product: currentProduct.name,
+                  discount: { name: "Chegirma/Boshqa", value: discountValue }
+                });
+              }
+            }
+          }
+        });
       }
 
       // Get summary rows as before

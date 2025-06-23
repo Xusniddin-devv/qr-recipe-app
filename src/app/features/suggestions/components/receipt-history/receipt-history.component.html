@@ -1,0 +1,207 @@
+@if (hasHistory$ | async) {
+<div class="history-container mb-8 mx-auto mt-4">
+  <h3
+    class="text-xl sm:text-2xl font-bold mb-5 text-gray-800 border-l-4 border-blue-500 pl-3"
+  >
+    Spending Trends
+  </h3>
+
+  <app-custom-accordion title="Weekly Summary" [startOpen]="true">
+    @if (weeklySummary$ | async; as weekly) {
+    <div class="p-4 bg-white rounded-lg">
+      <div
+        class="mb-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl overflow-hidden shadow-sm"
+      >
+        <div
+          class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center p-5"
+        >
+          <h4 class="text-lg font-medium text-blue-800 mb-2 sm:mb-0">
+            <i class="pi pi-calendar mr-2"></i>
+            Week of {{ formatDateRange(weekly.startDate, weekly.endDate) }}
+          </h4>
+          <div class="flex flex-col items-end">
+            <span class="text-sm text-blue-600 font-medium">TOTAL SPENT</span>
+            <span class="text-2xl font-bold text-blue-700">
+              {{ weekly.totalSpent | currency : "UZS " : "symbol" : "1.0-0" }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <h5 class="text-gray-700 font-semibold mb-4 flex items-center">
+            <i class="pi pi-info-circle mr-2 text-blue-500"></i>Summary
+          </h5>
+          <ul class="list-none p-0 space-y-3">
+            <li
+              class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+            >
+              <span class="text-gray-600">Total Items:</span>
+              <span
+                class="font-medium bg-blue-100 text-blue-800 px-3 py-1 rounded-full"
+              >
+                {{ weekly.productCount }}
+              </span>
+            </li>
+            <li
+              class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+            >
+              <span class="text-gray-600">Total Saved:</span>
+              <span
+                class="font-medium bg-green-100 text-green-800 px-3 py-1 rounded-full"
+              >
+                {{ weekly.totalSaved | currency : "UZS " : "symbol" : "1.0-0" }}
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <h5 class="text-gray-700 font-semibold mb-4 flex items-center">
+            <i class="pi pi-chart-pie mr-2 text-blue-500"></i>Top Categories
+          </h5>
+          <div class="chart-container" [style.min-height.px]="200">
+            <p-chart
+              type="pie"
+              [data]="weeklyChartData"
+              [options]="chartOptions"
+            ></p-chart>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-6 bg-white rounded-xl p-5 shadow-sm border border-gray-100"
+      >
+        <h5 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+          <i class="pi pi-list mr-2 text-blue-500"></i>Category Breakdown
+        </h5>
+        <div class="space-y-3">
+          @for (category of weekly.topCategories; track category.category) {
+          <div
+            class="flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 rounded-lg"
+          >
+            <span class="font-medium">{{ category.category }}</span>
+            <span class="font-medium text-blue-700">
+              {{ category.amount | currency : "UZS " : "symbol" : "1.0-0" }}
+            </span>
+          </div>
+          } @if (!weekly.topCategories || weekly.topCategories.length === 0) {
+          <div class="text-center text-gray-500 py-5 bg-gray-50 rounded-lg">
+            <i class="pi pi-info-circle text-xl mb-2"></i>
+            <p>No category data available</p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    } @else {
+    <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-lg">
+      <i class="pi pi-info-circle text-2xl mb-2 text-blue-300"></i>
+      <p>No weekly data available yet</p>
+    </div>
+    }
+  </app-custom-accordion>
+
+  <div class="mt-6"></div>
+
+  <app-custom-accordion title="Monthly Summary">
+    @if (monthlySummary$ | async; as monthly) {
+    <div class="p-4 bg-white rounded-lg">
+      <div
+        class="mb-5 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl overflow-hidden shadow-sm"
+      >
+        <div
+          class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center p-5"
+        >
+          <h4 class="text-lg font-medium text-green-800 mb-2 sm:mb-0">
+            <i class="pi pi-calendar mr-2"></i>
+            Month of {{ monthly.startDate | date : "MMMM yyyy" }}
+          </h4>
+          <div class="flex flex-col items-end">
+            <span class="text-sm text-green-600 font-medium">TOTAL SPENT</span>
+            <span class="text-2xl font-bold text-green-700">
+              {{ monthly.totalSpent | currency : "UZS " : "symbol" : "1.0-0" }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <h5 class="text-gray-700 font-semibold mb-4 flex items-center">
+            <i class="pi pi-info-circle mr-2 text-green-500"></i>Summary
+          </h5>
+          <ul class="list-none p-0 space-y-3">
+            <li
+              class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+            >
+              <span class="text-gray-600">Total Items:</span>
+              <span
+                class="font-medium bg-green-100 text-green-800 px-3 py-1 rounded-full"
+              >
+                {{ monthly.productCount }}
+              </span>
+            </li>
+            <li
+              class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+            >
+              <span class="text-gray-600">Total Saved:</span>
+              <span
+                class="font-medium bg-green-100 text-green-800 px-3 py-1 rounded-full"
+              >
+                {{
+                  monthly.totalSaved | currency : "UZS " : "symbol" : "1.0-0"
+                }}
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+          <h5 class="text-gray-700 font-semibold mb-4 flex items-center">
+            <i class="pi pi-chart-pie mr-2 text-green-500"></i>Top Categories
+          </h5>
+          <div class="chart-container" [style.min-height.px]="200">
+            <p-chart
+              type="pie"
+              [data]="monthlyChartData"
+              [options]="chartOptions"
+            ></p-chart>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-6 bg-white rounded-xl p-5 shadow-sm border border-gray-100"
+      >
+        <h5 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+          <i class="pi pi-list mr-2 text-green-500"></i>Category Breakdown
+        </h5>
+        <div class="space-y-3">
+          @for (category of monthly.topCategories; track category.category) {
+          <div
+            class="flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 rounded-lg"
+          >
+            <span class="font-medium">{{ category.category }}</span>
+            <span class="font-medium text-green-700">
+              {{ category.amount | currency : "UZS " : "symbol" : "1.0-0" }}
+            </span>
+          </div>
+          } @if (!monthly.topCategories || monthly.topCategories.length === 0) {
+          <div class="text-center text-gray-500 py-5 bg-gray-50 rounded-lg">
+            <i class="pi pi-info-circle text-xl mb-2"></i>
+            <p>No category data available</p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    } @else {
+    <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-lg">
+      <i class="pi pi-info-circle text-2xl mb-2 text-green-300"></i>
+      <p>No monthly data available yet</p>
+    </div>
+    }
+  </app-custom-accordion>
+</div>
+}

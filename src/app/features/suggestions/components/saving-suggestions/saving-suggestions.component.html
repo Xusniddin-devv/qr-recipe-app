@@ -1,66 +1,67 @@
-<div class="saving-suggestions-container">
-  <!-- No Products State -->
-  @if (!hasProducts) {
-  <div class="text-center p-6 bg-gray-50 rounded-lg shadow">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="mx-auto h-12 w-12 text-gray-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-      />
-    </svg>
-    <p class="mt-2 text-sm font-medium text-gray-900">
-      No receipt data to analyze.
-    </p>
-    <p class="mt-1 text-sm text-gray-500">
-      Scan a receipt first to get saving suggestions.
-    </p>
-  </div>
-  }
-
-  <!-- Error State -->
-  @if (error && hasProducts) {
-  <div
-    class="error-message text-center p-4 my-4 bg-red-100 text-red-700 rounded-md"
-  >
-    <p>Error: {{ error }}</p>
-    @if (error === 'OpenRouter API key is not configured.' || (error &&
-    error.includes('Unauthorized'))) {
-    <p>Please ensure the OpenRouter API key is correctly set.</p>
-    }
-  </div>
-  }
-
-  <!-- Saving Suggestions Content -->
-  @if (hasProducts && !error && suggestions && suggestions.savingSuggestions &&
-  suggestions.savingSuggestions.length) {
-  <div class="ai-suggestions-section mb-6">
-    <h3 class="section-title text-xl font-semibold mb-3 text-orange-700">
-      Saving Suggestions
-    </h3>
-    <ul class="ai-suggestions-list list-none p-0 space-y-3">
-      @for (suggestion of suggestions.savingSuggestions; track $index) {
-      <li
-        class="text-gray-800 p-3 bg-orange-50 rounded-lg shadow-sm"
-        [innerHTML]="suggestion"
-      ></li>
-      }
-    </ul>
-  </div>
-  }
-
-  <!-- No Suggestions Available -->
-  @if (hasProducts && !error && (!suggestions || !suggestions.savingSuggestions
-  || !suggestions.savingSuggestions.length)) {
-  <div class="text-gray-500 italic p-3 bg-gray-50 rounded-lg">
-    No specific saving suggestions available for these items at the moment.
-  </div>
+@if (isLoading) {
+<app-loading-indicator
+  message="Getting saving suggestions..."
+></app-loading-indicator>
+} @else if (error) {
+<div
+  class="grid p-4 my-4 bg-red-100 text-red-700 rounded-md place-items-center text-center"
+>
+  <p>Error: {{ error }}</p>
+  @if (error === 'OpenRouter API key is not configured.' ||
+  error.includes('Unauthorized')) {
+  <p>Please ensure the OpenRouter API key is correctly set.</p>
   }
 </div>
+} @else if (!suggestions) { @if (hasProducts) {
+<app-empty-state
+  icon="analysis"
+  title="Analyzing your purchases for saving opportunities..."
+  description="Suggestions will appear here shortly."
+>
+</app-empty-state>
+} @else {
+<app-empty-state
+  icon="receipt-missing"
+  title="No receipt data to analyze."
+  description="Scan a receipt first to get saving suggestions."
+>
+</app-empty-state>
+} } @else if (suggestions.savingSuggestions.length === 0) {
+<div
+  class="grid grid-cols-[auto_1fr] gap-2 items-center p-6 bg-white rounded-lg shadow-sm"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-6 w-6 text-orange-500"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span class="text-gray-600 text-sm"
+    >No saving suggestions available for these items.</span
+  >
+</div>
+} @else {
+<div class="ai-suggestions-section mb-6">
+  <h3
+    class="section-title text-lg sm:text-xl font-semibold mb-3 text-orange-700"
+  >
+    Saving Suggestions
+  </h3>
+  <div class="grid gap-3">
+    @for (suggestion of suggestions.savingSuggestions; track $index) {
+    <div
+      class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-orange-500"
+      [innerHTML]="suggestion | markdown"
+    ></div>
+    }
+  </div>
+</div>
+}

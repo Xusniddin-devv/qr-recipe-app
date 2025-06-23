@@ -1,20 +1,21 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { ReceiptDetailComponent } from './features/receipt-detail/receipt-detail.component';
 
 export const routes: Routes = [
-  // Default route redirects to dashboard
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
-  // Main dashboard route
-  { path: 'dashboard', component: DashboardComponent },
-
-  // Feature routes as siblings, not children
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    data: { title: 'Dashboard', showBackButton: false, showNavigation: false },
+  },
   {
     path: 'scan',
     loadComponent: () =>
       import('./features/qr-scanner/qr-scanner.component').then(
         (m) => m.QrScannerComponent
       ),
+    data: { title: 'Scanner', showBackButton: false, showNavigation: true },
   },
   {
     path: 'pantry',
@@ -22,6 +23,7 @@ export const routes: Routes = [
       import('./features/pantry/pantry.component').then(
         (m) => m.PantryComponent
       ),
+    data: { title: 'Pantry', showBackButton: false, showNavigation: true },
   },
   {
     path: 'recipes',
@@ -29,8 +31,16 @@ export const routes: Routes = [
       import('./features/suggestions/suggestions.component').then(
         (m) => m.SuggestionsComponent
       ),
+    data: { title: 'Suggestions', showBackButton: false, showNavigation: true },
   },
-
-  // Catch-all route
+  {
+    path: 'receipt/:id',
+    component: ReceiptDetailComponent,
+    data: {
+      title: 'Receipt Details',
+      showBackButton: true,
+      showNavigation: true,
+    },
+  },
   { path: '**', redirectTo: 'dashboard' },
 ];

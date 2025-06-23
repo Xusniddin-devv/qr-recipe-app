@@ -74,24 +74,41 @@
     <ul class="list-none p-0 m-0">
       @for (scan of recentScans(); track scan.id) {
       <li
-        class="flex items-center py-3 border-b border-gray-200 last:border-b-0"
+        class="block border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors"
       >
-        <i class="pi pi-clock text-gray-500 mr-3"></i>
-        <div class="flex-grow">
-          <div class="font-medium">{{ formatScanDate(scan.timestamp) }}</div>
-          <div class="text-sm text-gray-500 truncate max-w-xs">
-            {{ scan.url }}
+        <a
+          [routerLink]="
+            scan.success && scan.receiptId ? ['/receipt', scan.receiptId] : null
+          "
+          [class.cursor-pointer]="scan.success && scan.receiptId"
+          [class.cursor-not-allowed]="!scan.success || !scan.receiptId"
+          class="flex items-center py-3 px-2 w-full"
+        >
+          <i class="pi pi-clock text-gray-500 mr-3"></i>
+          <div class="flex-grow overflow-hidden">
+            <div class="font-medium">
+              {{ formatScanDate(scan.timestamp) }}
+            </div>
+            <div class="text-sm text-gray-500 truncate">
+              @if (typeof scan.totalAmount === 'number') {
+              <span class="font-semibold">{{
+                scan.totalAmount | currency : "UZS " : "symbol" : "1.0-0"
+              }}</span>
+              } @else {
+              {{ scan.url }}
+              }
+            </div>
           </div>
-        </div>
-        @if (scan.success) {
-        <span class="text-green-500">
-          <i class="pi pi-check-circle"></i>
-        </span>
-        } @else {
-        <span class="text-red-500">
-          <i class="pi pi-times-circle"></i>
-        </span>
-        }
+          @if (scan.success) {
+          <span class="text-green-500 ml-2">
+            <i class="pi pi-check-circle"></i>
+          </span>
+          } @else {
+          <span class="text-red-500 ml-2">
+            <i class="pi pi-times-circle"></i>
+          </span>
+          }
+        </a>
       </li>
       }
     </ul>

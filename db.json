@@ -1,23 +1,111 @@
 {
-  "receipts": [],
+  "receipts": [
+    {
+      "id": "4790",
+      "scanUrl": "https://ofd.soliq.uz/check?t=VG343420034086&r=74385&c=20250622185123&s=367502132594",
+      "scanDate": 1750677208318,
+      "totalAmount": 193612.94,
+      "products": [
+        {
+          "name": "AF_Tovuq filesi, kg**",
+          "quantity": 1.138,
+          "price": 47784.62,
+          "category": "Meat"
+        },
+        {
+          "name": "Sut sterillangan Pure Milky 1% 1L***",
+          "quantity": 1,
+          "price": 11990,
+          "category": "Dairy"
+        },
+        {
+          "name": "Zaytun yog'i Taris 500ml",
+          "quantity": 1,
+          "price": 99990,
+          "category": "Other"
+        },
+        {
+          "name": "Bedana tuxumi 365 kun 12dona",
+          "quantity": 1,
+          "price": 10990,
+          "category": "Other"
+        },
+        {
+          "name": "Ichimlik Pepsi Zero p/b 500ml",
+          "quantity": 1,
+          "price": 4990,
+          "category": "Beverages"
+        },
+        {
+          "name": "Tvorog BEST yog'siz 400g",
+          "quantity": 1,
+          "price": 21990,
+          "category": "Other"
+        },
+        {
+          "name": "Banan 2-nav, kg",
+          "quantity": 0.968,
+          "price": 15478.32,
+          "category": "Fruits"
+        },
+        {
+          "name": "Logotipli paket Bio poelitilen 4 k gacha",
+          "quantity": 1,
+          "price": 400,
+          "category": "Other"
+        }
+      ],
+      "discounts": [
+        {
+          "productName": "Zaytun yog'i Taris 500ml",
+          "discountName": "Chegirma/Boshqa",
+          "discountValue": 20000
+        }
+      ]
+    },
+    {
+      "id": "8428",
+      "scanUrl": "https://ofd.soliq.uz/check?t=VG343420001178&r=718&c=20250524222914&s=952335162882",
+      "scanDate": 1750683969591,
+      "totalAmount": 174000,
+      "products": [
+        {
+          "name": "KOPUM PLUS SAKURA CHERRY BLOSSOM & FLORAL КАПСУЛА 32 ШТ",
+          "quantity": 1,
+          "price": 105000,
+          "category": "Other"
+        },
+        {
+          "name": "Жидкое мыло PUFFIX ПЕННОЕ МЫЛО 350 ГР",
+          "quantity": 2,
+          "price": 24000,
+          "category": "Other"
+        },
+        {
+          "name": "ЗУБНАЯ ЩЕТКА BONNA EXTREME/SUNSET",
+          "quantity": 3,
+          "price": 45000,
+          "category": "Other"
+        }
+      ],
+      "discounts": []
+    }
+  ],
   "scans": [
     {
-      "id": "b2fd",
+      "id": "70f2",
       "url": "https://ofd.soliq.uz/check?t=VG343420034086&r=74385&c=20250622185123&s=367502132594",
-      "timestamp": 1750612811762,
-      "success": true
+      "timestamp": 1750677208400,
+      "success": true,
+      "receiptId": "4790"
     },
     {
-      "id": "3dd6",
-      "url": "https://ofd.soliq.uz/check?t=VG343420034086&r=74385&c=20250622185123&s=367502132594",
-      "timestamp": 1750613406663,
-      "success": true
-    },
-    {
-      "id": "9244",
-      "url": "https://ofd.soliq.uz/check?t=VG343420034086&r=74385&c=20250622185123&s=367502132594",
-      "timestamp": 1750613841541,
-      "success": true
+      "id": "ea15",
+      "url": "https://ofd.soliq.uz/check?t=VG343420001178&r=718&c=20250524222914&s=952335162882",
+      "timestamp": 1750683969772,
+      "success": true,
+      "receiptId": "8428",
+      "totalAmount": 174000
     }
   ]
 }

@@ -14,7 +14,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import jsQR from 'jsqr';
 import { CheckService, ReceiptData } from '../../core/check.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { BehaviorSubject, Subject, from, throwError } from 'rxjs';
 import { catchError, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
@@ -25,11 +25,12 @@ import { ScannerStateService } from '../../core/scanner-state.service';
 
 // Import PrimeNG components
 import { ButtonModule } from 'primeng/button';
+import { ReceiptStorageService } from '../../core/receipt-storage.service';
 
 @Component({
   selector: 'app-qr-scanner',
   standalone: true,
-  imports: [CommonModule, ButtonModule],
+  imports: [CommonModule, ButtonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './qr-scanner.component.html',
 })
@@ -43,6 +44,7 @@ export class QrScannerComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private scanHistoryService = inject(ScanHistoryService);
   private scannerStateService = inject(ScannerStateService);
+  private receiptStorageService = inject(ReceiptStorageService);
 
   // State signals
   recentScans = signal<ScanRecord[]>([]);
@@ -102,7 +104,6 @@ export class QrScannerComponent implements OnInit, OnDestroy {
     this.scanFrame();
 
     if (this.streamActive) {
-      // If scanFrame didn't stop it and streamActive is still true
       this.animationFrameId = requestAnimationFrame(() => this.scanLoop());
     }
     this.cd.markForCheck();
@@ -171,7 +172,7 @@ export class QrScannerComponent implements OnInit, OnDestroy {
             );
           }
         },
-        error: (err) => {
+        error: (_err) => {
           if (!this.hasError) {
             this.status$.next('An unexpected error occurred.');
             this.hasError = true;
@@ -211,16 +212,22 @@ export class QrScannerComponent implements OnInit, OnDestroy {
     this.cd.markForCheck();
   }
 
-  saveScan(url: string, success: boolean): void {
+  saveScan(
+    url: string,
+    success: boolean,
+    receiptId?: string,
+    totalAmount?: number
+  ): void {
     const scan: ScanRecord = {
       url: url,
       timestamp: Date.now(),
       success: success,
+      receiptId: receiptId,
+      totalAmount: totalAmount,
     };
 
     this.scanHistoryService.addScan(scan).subscribe({
       next: () => {
-        // Refresh the scan list after saving
         this.loadRecentScans();
       },
       error: (err) => console.error('Failed to save scan', err),
@@ -281,43 +288,72 @@ export class QrScannerComponent implements OnInit, OnDestroy {
         this.cd.detectChanges();
 
         if (this.decodedUrl) {
-          this.check.fetchProducts(this.decodedUrl).subscribe({
-            next: (data) => {
-              this.productsData = data;
-              this.showResults = true;
-              this.status$.next('Receipt processed, redirecting...');
-              this.hasError = false;
+          // --- REFACTORED CODE ---
+          // Use the single, encapsulated method from the storage service.
+          this.receiptStorageService
+            .processAndSaveReceipt(this.decodedUrl)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (savedReceipt) => {
+                this.status$.next('Receipt saved, redirecting...');
+                this.hasError = false;
 
-              // Save successful scan
-              this.saveScan(this.decodedUrl!, true);
+                // The check remains the same, but the data is now more reliable.
+                if (
+                  savedReceipt &&
+                  savedReceipt.id &&
+                  typeof savedReceipt.totalAmount === 'number'
+                ) {
+                  // SUCCESS CASE: We have a full receipt object.
+                  this.saveScan(
+                    this.decodedUrl!,
+                    true,
+                    savedReceipt.id.toString(),
+                    savedReceipt.totalAmount
+                  );
+                } else {
+                  // FAILURE CASE: Receipt data is incomplete, but may still have totalAmount
+                  console.warn(
+                    'Receipt processed, but ID or totalAmount was missing. Logging as a failed scan. Received:',
+                    savedReceipt
+                  );
 
-              this.cd.detectChanges();
-
-              setTimeout(() => {
-                if (this.track) {
-                  this.track.stop();
-                  this.track = undefined;
+                  // Pass the totalAmount even for "failed" scans if it exists
+                  this.saveScan(
+                    this.decodedUrl!,
+                    false,
+                    undefined,
+                    savedReceipt?.totalAmount
+                  );
                 }
-                this.streamActive = false;
-                this.scannerStateService.setScanningState(false);
-                this.showStatus = false;
+
                 this.cd.detectChanges();
-                this.router.navigate(['/pantry']);
-              }, 500);
-            },
-            error: (err) => {
-              console.error('Error processing receipt:', err);
-              this.status$.next('Error processing receipt.');
-              this.hasError = true;
 
-              // Save failed scan
-              if (this.decodedUrl) {
-                this.saveScan(this.decodedUrl, false);
-              }
+                setTimeout(() => {
+                  if (this.track) {
+                    this.track.stop();
+                    this.track = undefined;
+                  }
+                  this.streamActive = false;
+                  this.scannerStateService.setScanningState(false);
+                  this.showStatus = false;
+                  this.cd.detectChanges();
+                  this.router.navigate(['/pantry']);
+                }, 500);
+              },
+              error: (err) => {
+                console.error('Error processing or saving receipt:', err);
+                this.status$.next('Error processing receipt.');
+                this.hasError = true;
 
-              this.cd.detectChanges();
-            },
-          });
+                if (this.decodedUrl) {
+                  // Include 0 as totalAmount for error cases so the template shows a number instead of URL
+                  this.saveScan(this.decodedUrl, false, undefined, 0);
+                }
+
+                this.cd.detectChanges();
+              },
+            });
         }
       } else {
         this.status$.next(

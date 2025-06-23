@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject, forkJoin } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, take } from 'rxjs/operators';
 import { CheckService, Product, Discount } from './check.service';
 import { AiSuggestionService, AiSuggestions } from './ai.suggestions.service';
 
@@ -60,14 +60,32 @@ export class ReceiptStorageService {
   );
   monthlySummary$ = this.monthlySummarySubject.asObservable();
 
+  processAndSaveReceipt(scanUrl: string): Observable<ReceiptRecord | null> {
+    // Use the `fetchProducts` method from CheckService to process the scan.
+    // This method updates the streams in CheckService, which are then used by saveCurrentReceipt.
+    return this.checkService.fetchProducts(scanUrl).pipe(
+      switchMap((receiptData) => {
+        if (!receiptData) {
+          // If fetchProducts fails (returns null), stop the chain.
+          return of(null);
+        }
+        return this.saveCurrentReceipt(scanUrl);
+      }),
+      catchError((error) => {
+        console.error('Failed to process and save receipt:', error);
+        return of(null); // Return null to indicate failure.
+      })
+    );
+  }
+
   // Save the current receipt with products, discounts, and AI suggestions
   saveCurrentReceipt(scanUrl: string): Observable<ReceiptRecord | null> {
-    // Get current data from services
+    // Get current data from services, using take(1) to ensure observables complete.
     return forkJoin({
-      products: this.checkService.products$,
-      discounts: this.checkService.discounts$,
-      summary: this.checkService.summary$,
-      suggestions: this.aiService.suggestions$,
+      products: this.checkService.products$.pipe(take(1)),
+      discounts: this.checkService.discounts$.pipe(take(1)),
+      summary: this.checkService.summary$.pipe(take(1)),
+      suggestions: this.aiService.suggestions$.pipe(take(1)),
     }).pipe(
       switchMap(({ products, discounts, summary, suggestions }) => {
         // Calculate total amount from summary or products
@@ -130,7 +148,9 @@ export class ReceiptStorageService {
       })
     );
   }
-
+  getReceipt(id: string): Observable<ReceiptRecord> {
+    return this.http.get<ReceiptRecord>(`${this.apiUrl}/${id}`);
+  }
   // Get all receipts within a date range
   getReceiptsInRange(
     startDate: Date,
