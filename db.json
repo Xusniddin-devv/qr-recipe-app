@@ -89,6 +89,93 @@
         }
       ],
       "discounts": []
+    },
+    {
+      "id": "2e22",
+      "scanUrl": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
+      "scanDate": 1750848575745,
+      "totalAmount": 15980,
+      "products": [
+        {
+          "name": "Ichimlik Fanta Orange p/b, 1L",
+          "quantity": 1,
+          "price": 9990,
+          "category": "Beverages"
+        },
+        {
+          "name": "Marmelad Neo Botanicayertut-banan 75g",
+          "quantity": 1,
+          "price": 17990,
+          "category": "Fruits"
+        }
+      ],
+      "discounts": [
+        {
+          "productName": "Marmelad Neo Botanicayertut-banan 75g",
+          "discountName": "Chegirma/Boshqa",
+          "discountValue": 10000
+        }
+      ]
+    },
+    {
+      "id": "dfdd",
+      "scanUrl": "https://ofd.soliq.uz/check?t=UZ210317220183&r=56845&c=20250624125532&s=058503180161",
+      "scanDate": 1750849090693,
+      "totalAmount": 29716.6,
+      "products": [
+        {
+          "name": "Norin kg",
+          "quantity": 0.2,
+          "price": 23980,
+          "category": "Other"
+        },
+        {
+          "name": "Salat Lavlagi mayonezli, kg",
+          "quantity": 0.234,
+          "price": 9336.6,
+          "category": "Other"
+        },
+        {
+          "name": "Logotipli paket Bio poelitilen 4 k gacha",
+          "quantity": 1,
+          "price": 400,
+          "category": "Other"
+        }
+      ],
+      "discounts": [
+        {
+          "productName": "Norin kg",
+          "discountName": "Chegirma/Boshqa",
+          "discountValue": 4000
+        }
+      ]
+    },
+    {
+      "id": "e82c",
+      "scanUrl": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
+      "scanDate": 1750849780188,
+      "totalAmount": 15980,
+      "products": [
+        {
+          "name": "Ichimlik Fanta Orange p/b, 1L",
+          "quantity": 1,
+          "price": 9990,
+          "category": "Beverages"
+        },
+        {
+          "name": "Marmelad Neo Botanicayertut-banan 75g",
+          "quantity": 1,
+          "price": 17990,
+          "category": "Fruits"
+        }
+      ],
+      "discounts": [
+        {
+          "productName": "Marmelad Neo Botanicayertut-banan 75g",
+          "discountName": "Chegirma/Boshqa",
+          "discountValue": 10000
+        }
+      ]
     }
   ],
   "scans": [
@@ -106,6 +193,30 @@
       "success": true,
       "receiptId": "8428",
       "totalAmount": 174000
+    },
+    {
+      "id": "3c68",
+      "url": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
+      "timestamp": 1750848575842,
+      "success": true,
+      "receiptId": "2e22",
+      "totalAmount": 15980
+    },
+    {
+      "id": "ab58",
+      "url": "https://ofd.soliq.uz/check?t=UZ210317220183&r=56845&c=20250624125532&s=058503180161",
+      "timestamp": 1750849090772,
+      "success": true,
+      "receiptId": "dfdd",
+      "totalAmount": 29716.6
+    },
+    {
+      "id": "4acf",
+      "url": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
+      "timestamp": 1750849780290,
+      "success": true,
+      "receiptId": "e82c",
+      "totalAmount": 15980
     }
   ]
 }

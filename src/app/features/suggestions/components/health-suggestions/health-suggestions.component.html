@@ -1,7 +1,6 @@
-<!-- health-suggestions.component.html -->
 @if (isLoading) {
 <app-loading-indicator
-  message="Getting smart suggestions..."
+  message="Getting health insights..."
 ></app-loading-indicator>
 } @else if (error) {
 <div
@@ -16,18 +15,16 @@
 } @else if (!suggestions) { @if (hasProducts) {
 <app-empty-state
   icon="analysis"
-  title="Analyzing your items for suggestions..."
-  description="Suggestions will appear here shortly."
->
-</app-empty-state>
+  title="Analyzing your items for health insights..."
+  description="Health suggestions will appear here shortly."
+></app-empty-state>
 } @else {
 <app-empty-state
   icon="receipt-missing"
   title="No receipt data to analyze."
-  description="Scan a receipt first to get AI-powered suggestions."
->
-</app-empty-state>
-} } @else if (suggestions.healthSuggestions.length === 0) {
+  description="Scan a receipt first to get AI-powered health suggestions."
+></app-empty-state>
+} } @else if (!hasHealthContent()) {
 <div
   class="grid grid-cols-[auto_1fr] gap-2 items-center p-6 bg-white rounded-lg shadow-sm"
 >
@@ -49,20 +46,29 @@
     >No health suggestions available for these items.</span
   >
 </div>
-} @else {
+} @else { @for (section of getHealthSections(); track section.title) {
 <div class="ai-suggestions-section mb-6">
   <h3
-    class="section-title text-lg sm:text-xl font-semibold mb-3 text-green-700"
+    class="section-title text-lg sm:text-xl font-semibold mb-3 flex items-center gap-2"
+    [ngClass]="{
+      'text-green-700': section.color === 'green',
+      'text-blue-700': section.color === 'blue'
+    }"
   >
-    Health Suggestions
+    <span>{{ section.icon }}</span>
+    {{ section.title }}
   </h3>
   <div class="grid gap-3">
-    @for (suggestion of suggestions.healthSuggestions; track $index) {
+    @for (item of section.items; track $index) {
     <div
-      class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-green-500"
-      [innerHTML]="suggestion | markdown"
+      class="p-4 bg-white rounded-lg shadow-sm border-l-4 transition-all hover:shadow-md"
+      [ngClass]="{
+        'border-green-500': section.color === 'green',
+        'border-blue-500': section.color === 'blue'
+      }"
+      [innerHTML]="item | markdown"
     ></div>
     }
   </div>
 </div>
-}
+} }

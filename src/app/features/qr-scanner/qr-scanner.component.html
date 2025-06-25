@@ -21,13 +21,14 @@
   <div
     class="absolute w-6 h-6 border-4 border-white bottom-[35%] right-[25%] border-l-0 border-t-0"
   ></div>
-  @if(showStatus){
+
+  @if(status){
   <div
-    class="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 p-2.5 text-center font-bold transition-all duration-300 ease-in-out border-2 border-transparent rounded-md w-auto max-w-[80%]"
+    class="absolute bottom-40 left-1/2 -translate-x-1/2 z-50 px-6 py-3 text-center font-semibold transition-all duration-300 ease-in-out border-2 border-transparent rounded-xl w-auto max-w-[90%] backdrop-blur-sm shadow-lg"
     [ngClass]="{
-      'bg-[#4CAF50] text-white border-[#388E3C] animate-pulse':
+      'bg-emerald-500/90 text-white border-emerald-400/50 animate-pulse shadow-emerald-500/25':
         decodedUrl !== null && !hasError,
-      'bg-red-500 text-white border-red-700': hasError
+      'bg-red-500/90 text-white border-red-400/50 shadow-red-500/25': hasError
     }"
   >
     {{ status }}
@@ -38,43 +39,47 @@
     class="absolute bottom-16 left-1/2 -translate-x-1/2 bg-black/50 border-none p-3 rounded-full text-2xl text-white cursor-pointer z-50"
     (click)="toggleTorch()"
   >
-    <span [class]="torchOn ? 'text-[gold]' : ''">🔦</span>
+    <span [class]="torchOn ? 'text-[gold]' : ''"
+      ><img class="size-8" src="assets/flashlight.png" alt=""
+    /></span>
   </button>
 </div>
->} @else {
-<div class="p-5">
+} @else {
+<div
+  class="p-5 bg-gradient-to-b from-slate-100 to-slate-200 min-h-[calc(100vh-8rem)]"
+>
   <!-- Camera container as a button -->
   <button
     (click)="startScanner()"
     class="w-full mx-auto flex flex-col items-center focus:outline-none cursor-pointer"
   >
     <div
-      class="w-full aspect-square max-w-md bg-gray-100 border border-dashed border-gray-300 rounded-lg flex items-center justify-center"
+      class="w-full aspect-square max-w-md bg-slate-200/60 border border-dashed border-slate-300 rounded-lg flex items-center justify-center shadow-inner"
     >
-      <div class="text-gray-400">
+      <div class="text-slate-400">
         <i class="pi pi-camera text-6xl"></i>
       </div>
     </div>
   </button>
-  <p class="text-gray-500 text-center mt-2">
+  <p class="text-slate-500 text-center mt-2">
     Align the QR code on your receipt within the frame above.
   </p>
 
   <!-- Recent Scans Section -->
   <div class="mt-8">
-    <h2 class="text-xl font-bold mb-4">Recent Scans</h2>
+    <h2 class="text-xl font-bold mb-4 text-slate-800">Recent Scans</h2>
 
     @if (isLoading()) {
     <div class="flex justify-center p-4">
-      <i class="pi pi-spin pi-spinner text-2xl"></i>
+      <i class="pi pi-spin pi-spinner text-2xl text-slate-600"></i>
     </div>
     } @else if (recentScans().length === 0) {
-    <div class="text-center text-gray-500 p-4">No recent scans found</div>
+    <div class="text-center text-slate-500 p-4">No recent scans found</div>
     } @else {
-    <ul class="list-none p-0 m-0">
+    <ul class="list-none p-0 m-0 bg-white/70 rounded-lg shadow-sm">
       @for (scan of recentScans(); track scan.id) {
       <li
-        class="block border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors"
+        class="block border-b border-slate-200 last:border-b-0 hover:bg-slate-100/80 transition-colors"
       >
         <a
           [routerLink]="
@@ -82,14 +87,14 @@
           "
           [class.cursor-pointer]="scan.success && scan.receiptId"
           [class.cursor-not-allowed]="!scan.success || !scan.receiptId"
-          class="flex items-center py-3 px-2 w-full"
+          class="flex items-center py-3 px-4 w-full"
         >
-          <i class="pi pi-clock text-gray-500 mr-3"></i>
+          <i class="pi pi-clock text-slate-500 mr-3"></i>
           <div class="flex-grow overflow-hidden">
-            <div class="font-medium">
+            <div class="font-medium text-slate-800">
               {{ formatScanDate(scan.timestamp) }}
             </div>
-            <div class="text-sm text-gray-500 truncate">
+            <div class="text-sm text-slate-500 truncate">
               @if (typeof scan.totalAmount === 'number') {
               <span class="font-semibold">{{
                 scan.totalAmount | currency : "UZS " : "symbol" : "1.0-0"

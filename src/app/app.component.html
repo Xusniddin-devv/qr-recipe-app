@@ -2,7 +2,7 @@
   <!-- Header with Breadcrumbs -->
   @if (showNavigation) {
   <header
-    class="fixed top-0 left-0 w-full bg-gradient-to-r from-slate-800 to-slate-700 text-white z-50 px-4 py-3 shadow-md"
+    class="fixed top-0 left-0 w-full bg-gradient-to-r from-slate-500 to-slate-400 text-white z-50 px-4 py-3 shadow-md"
   >
     <div class="flex items-center justify-between">
       <!-- Left section with logo -->
@@ -21,7 +21,7 @@
       <!-- Right section with back button -->
       <div>
         @if (shouldShowBackButton()) {
-        <button (click)="goBack()" class="p-2 text-gray-800 focus:outline-none">
+        <button (click)="goBack()" class="p-2 text-white focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -43,38 +43,37 @@
   }
 
   <!-- Main Content - Add padding to account for fixed header and footer -->
-  <main class="p-4 pb-16" [class.pt-16]="showNavigation">
-    <div
-      class="grid grid-rows-[auto_1fr_auto] min-h-screen bg-gradient-to-b from-slate-100 to-slate-200"
-    >
-      <router-outlet></router-outlet>
-    </div>
+  <main
+    class="p-4 pb-16 grid grid-rows-[auto_1fr_auto] min-h-screen bg-gradient-to-b from-slate-100 to-slate-200"
+    [class.pt-16]="showNavigation"
+  >
+    <router-outlet></router-outlet>
   </main>
 
   <!-- Footer Navigation -->
   @if (showNavigation) {
   <footer
-    class="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white z-50 border-t border-slate-600"
+    class="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-r from-slate-500 to-slate-400 text-white z-50 border-t border-slate-500"
   >
     <nav class="grid grid-cols-3 w-full">
       <a
         routerLink="/scan"
-        routerLinkActive="font-bold text-blue-900"
-        class="text-center text-blue-400"
+        routerLinkActive="font-bold text-white"
+        class="text-center text-blue-100"
       >
         <i class="pi pi-qrcode text-base"></i>
       </a>
       <a
         routerLink="/pantry"
-        routerLinkActive="font-bold text-blue-900"
-        class="text-center text-blue-400"
+        routerLinkActive="font-bold text-white"
+        class="text-center text-blue-100"
       >
         <i class="pi pi-chart-bar text-base"></i>
       </a>
       <a
         routerLink="/recipes"
-        routerLinkActive="font-bold text-blue-900"
-        class="text-center text-blue-400"
+        routerLinkActive="font-bold text-white"
+        class="text-center text-blue-100"
       >
         <i class="pi pi-microchip-ai text-base"></i>
       </a>
