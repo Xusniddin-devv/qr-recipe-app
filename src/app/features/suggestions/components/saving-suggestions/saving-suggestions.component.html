@@ -87,17 +87,21 @@
 
   @if (budget.costEffectiveItems.length > 0) {
   <div class="mt-4 p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-    <div class="text-sm font-medium text-green-300">Best Value Items:</div>
-    <div class="text-sm text-green-200 mt-1">
-      {{ budget.costEffectiveItems.join(", ") }}
-    </div>
+    <div class="text-sm font-medium text-green-300 mb-2">Best Value Items:</div>
+    <ul class="text-sm text-green-200 space-y-1 list-disc list-inside">
+      @for(item of budget.costEffectiveItems; track item) {
+      <li>{{ item }}</li>
+      }
+    </ul>
   </div>
   } @if (budget.expensiveItems.length > 0) {
   <div class="mt-3 p-3 bg-red-500/10 rounded-lg border border-red-500/20">
-    <div class="text-sm font-medium text-red-300">Premium Items:</div>
-    <div class="text-sm text-red-200 mt-1">
-      {{ budget.expensiveItems.join(", ") }}
-    </div>
+    <div class="text-sm font-medium text-red-300 mb-2">Premium Items:</div>
+    <ul class="text-sm text-red-200 space-y-1 list-disc list-inside">
+      @for(item of budget.expensiveItems; track item) {
+      <li>{{ item }}</li>
+      }
+    </ul>
   </div>
   }
 </div>
