@@ -226,12 +226,43 @@ export class AiSuggestionService {
       (a, b) => b.savingsPercentage - a.savingsPercentage
     );
 
+    const prices = validProducts.map((p) => p.discountedPrice);
+    const avg = averagePrice;
+    const stdDev = Math.sqrt(
+      prices.reduce((sum, p) => sum + Math.pow(p - avg, 2), 0) /
+        (prices.length || 1)
+    );
+
+    // Define thresholds (20% below/above average, or use stdDev)
+    const budgetThreshold = avg * 0.8;
+    const premiumThreshold = avg * 1.2;
+
+    const costEffectiveItems = validProducts
+      .filter((p) => p.discountedPrice <= budgetThreshold)
+      .map((p) => p.name);
+
+    const expensiveItems = validProducts
+      .filter((p) => p.discountedPrice >= premiumThreshold)
+      .map((p) => p.name);
+
+    // Fallback: if no items match, use the cheapest/most expensive as before
+    const fallbackCostEffective = sortedByActualPrice
+      .slice(-3)
+      .map((p) => p.name);
+    const fallbackExpensive = sortedByActualPrice
+      .slice(0, 3)
+      .map((p) => p.name);
+
     const budgetAnalysis = {
       totalSpent: totalActualSpent,
       totalSaved: totalSaved,
       averageItemPrice: averagePrice,
-      costEffectiveItems: sortedByActualPrice.slice(-3).map((p) => p.name),
-      expensiveItems: sortedByActualPrice.slice(0, 3).map((p) => p.name),
+      costEffectiveItems: costEffectiveItems.length
+        ? costEffectiveItems
+        : fallbackCostEffective,
+      expensiveItems: expensiveItems.length
+        ? expensiveItems
+        : fallbackExpensive,
       discountUtilization:
         validProducts.length > 0
           ? (validProducts.filter((p) => p.totalDiscount > 0).length /
@@ -410,7 +441,9 @@ FORMATTING RULES:
       .sort()
       .join('|');
     const prefKey = preferences ? JSON.stringify(preferences) : '';
-    return btoa(`${productKey}-${discountKey}-${prefKey}`);
+    // Use encodeURIComponent to safely encode Unicode, then btoa
+    const raw = `${productKey}-${discountKey}-${prefKey}`;
+    return btoa(encodeURIComponent(raw));
   }
 
   private getCachedSuggestions(key: string): AiSuggestions | null {

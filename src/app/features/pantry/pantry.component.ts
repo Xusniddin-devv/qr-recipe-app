@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CheckService, Product, Discount } from '../../core/check.service';
 import { AiSuggestionService } from '../../core/ai.suggestions.service';
 import { ReceiptStorageService } from '../../core/receipt-storage.service'; // Add this
-import { ActivatedRoute } from '@angular/router'; // Add this
+import { ActivatedRoute, RouterLink } from '@angular/router'; // Add this
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // Add this for better subscription management
 
 import { Observable, combineLatest } from 'rxjs'; // Add combineLatest
@@ -13,7 +13,7 @@ import { UiStateService } from '../../core/ui.state.service';
 @Component({
   selector: 'app-pantry',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './pantry.component.html',
 })
 export class PantryComponent implements OnInit {

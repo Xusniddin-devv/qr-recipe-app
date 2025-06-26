@@ -1,27 +1,23 @@
-<div class="grid grid-rows-[auto_1fr_auto] min-h-screen">
-  <!-- Header with Breadcrumbs -->
+<div class="bg-slate-900 text-white">
   @if (showNavigation) {
   <header
-    class="fixed top-0 left-0 w-full bg-gradient-to-r from-slate-500 to-slate-400 text-white z-50 px-4 py-3 shadow-md"
+    class="fixed top-0 left-0 w-full bg-slate-800 text-white z-50 px-4 py-3 border-b border-slate-700 shadow-lg"
   >
-    <div class="flex items-center justify-between">
-      <!-- Left section with logo -->
+    <div class="flex items-center justify-between h-12">
       <div class="flex items-center">
-        <!-- Replace with your actual logo image -->
-        <img src="/assets/smartScanLogo.png" alt="Logo" class="h-12" />
+        <img src="assets/scandora-logo.png" alt="ScanDora Logo" class="h-8" />
       </div>
-
-      <!-- Center section with page title -->
       <div
-        class="absolute left-1/2 transform -translate-x-1/2 font-bold text-md"
+        class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 font-bold text-lg"
       >
         {{ currentRoute }}
       </div>
-
-      <!-- Right section with back button -->
-      <div>
+      <div class="flex items-center">
         @if (shouldShowBackButton()) {
-        <button (click)="goBack()" class="p-2 text-white focus:outline-none">
+        <button
+          (click)="goBack()"
+          class="p-2 text-white focus:outline-none rounded-full hover:bg-slate-700"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -29,7 +25,7 @@
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
+            stroke-width="2.5"
             stroke-linecap="round"
             stroke-linejoin="round"
           >
@@ -42,40 +38,40 @@
   </header>
   }
 
-  <!-- Main Content - Add padding to account for fixed header and footer -->
-  <main
-    class="p-4 pb-16 grid grid-rows-[auto_1fr_auto] min-h-screen bg-gradient-to-b from-slate-100 to-slate-200"
-    [class.pt-16]="showNavigation"
+  <div
+    class="min-h-screen"
+    [class.pt-20]="showNavigation"
+    [class.pb-24]="showNavigation"
   >
     <router-outlet></router-outlet>
-  </main>
+  </div>
 
-  <!-- Footer Navigation -->
   @if (showNavigation) {
   <footer
-    class="fixed bottom-0 left-0 w-full p-4 bg-gradient-to-r from-slate-500 to-slate-400 text-white z-50 border-t border-slate-500"
+    class="fixed bottom-0 left-0 w-full p-4 bg-slate-800 text-white z-50 border-t border-slate-700"
   >
-    <nav class="grid grid-cols-3 w-full">
+    <nav class="grid grid-cols-3 w-full items-center">
       <a
         routerLink="/scan"
-        routerLinkActive="font-bold text-white"
-        class="text-center text-blue-100"
+        routerLinkActive="text-blue-400"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="text-center text-slate-400 hover:text-white transition-colors"
       >
-        <i class="pi pi-qrcode text-base"></i>
+        <i class="pi pi-qrcode text-2xl"></i>
       </a>
       <a
         routerLink="/pantry"
-        routerLinkActive="font-bold text-white"
-        class="text-center text-blue-100"
+        routerLinkActive="text-blue-400"
+        class="text-center text-slate-400 hover:text-white transition-colors"
       >
-        <i class="pi pi-chart-bar text-base"></i>
+        <i class="pi pi-chart-bar text-2xl"></i>
       </a>
       <a
         routerLink="/recipes"
-        routerLinkActive="font-bold text-white"
-        class="text-center text-blue-100"
+        routerLinkActive="text-blue-400"
+        class="text-center text-slate-400 hover:text-white transition-colors"
       >
-        <i class="pi pi-microchip-ai text-base"></i>
+        <i class="pi pi-book text-2xl"></i>
       </a>
     </nav>
   </footer>

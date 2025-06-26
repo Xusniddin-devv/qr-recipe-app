@@ -91,36 +91,45 @@
       "discounts": []
     },
     {
-      "id": "2e22",
-      "scanUrl": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
-      "scanDate": 1750848575745,
-      "totalAmount": 15980,
+      "id": "4a70",
+      "scanUrl": "https://ofd.soliq.uz/check?t=VG343420005155&r=61558&c=20250525192626&s=102504933644",
+      "scanDate": 1750855525637,
+      "totalAmount": 56200,
       "products": [
         {
-          "name": "Ichimlik Fanta Orange p/b, 1L",
+          "name": "КЛОТРИЗ КРЕМ 15Г",
           "quantity": 1,
-          "price": 9990,
-          "category": "Beverages"
-        },
+          "price": 56200,
+          "category": "Other"
+        }
+      ],
+      "discounts": []
+    },
+    {
+      "id": "2e30",
+      "scanUrl": "https://ofd.soliq.uz/check?t=UZ210317220191&r=8455&c=20250526132155&s=077573007697",
+      "scanDate": 1750855537958,
+      "totalAmount": 21778.2,
+      "products": [
         {
-          "name": "Marmelad Neo Botanicayertut-banan 75g",
-          "quantity": 1,
-          "price": 17990,
-          "category": "Fruits"
+          "name": "Norin kg",
+          "quantity": 0.218,
+          "price": 26138.2,
+          "category": "Other"
         }
       ],
       "discounts": [
         {
-          "productName": "Marmelad Neo Botanicayertut-banan 75g",
+          "productName": "Norin kg",
           "discountName": "Chegirma/Boshqa",
-          "discountValue": 10000
+          "discountValue": 4360
         }
       ]
     },
     {
-      "id": "dfdd",
+      "id": "5157",
       "scanUrl": "https://ofd.soliq.uz/check?t=UZ210317220183&r=56845&c=20250624125532&s=058503180161",
-      "scanDate": 1750849090693,
+      "scanDate": 1750855547461,
       "totalAmount": 29716.6,
       "products": [
         {
@@ -151,9 +160,9 @@
       ]
     },
     {
-      "id": "e82c",
+      "id": "222a",
       "scanUrl": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
-      "scanDate": 1750849780188,
+      "scanDate": 1750855563269,
       "totalAmount": 15980,
       "products": [
         {
@@ -176,6 +185,99 @@
           "discountValue": 10000
         }
       ]
+    },
+    {
+      "id": "8b6b",
+      "scanUrl": "https://ofd.soliq.uz/check?t=VG343420001178&r=719&c=20250524223043&s=449810535593",
+      "scanDate": 1750855574982,
+      "totalAmount": 50000,
+      "products": [
+        {
+          "name": "ПЛАСТИР ОТ ЗАПАХА ДЛЯ НОГА",
+          "quantity": 2,
+          "price": 50000,
+          "category": "Other"
+        }
+      ],
+      "discounts": []
+    },
+    {
+      "id": "29aa",
+      "scanUrl": "https://ofd.soliq.uz/check?t=YZ231006014810&r=23348&c=20250522114224&s=703004233112",
+      "scanDate": 1750855602418,
+      "totalAmount": 27900,
+      "products": [
+        {
+          "name": "COCA-COLA 15L",
+          "quantity": 1,
+          "price": 27900,
+          "category": "Beverages"
+        }
+      ],
+      "discounts": []
+    },
+    {
+      "id": "8ad4",
+      "scanUrl": "https://ofd.soliq.uz/check?t=VG343420007017&r=253298&c=20250525225722&s=438255304204",
+      "scanDate": 1750855619659,
+      "totalAmount": 101950,
+      "products": [
+        {
+          "name": "SHOKOLADLI PLITKA QORA SHOKOLADLI 75/82GR ROSSIYSKIY",
+          "quantity": 1,
+          "price": 13500,
+          "category": "Other"
+        },
+        {
+          "name": "SUT 1% 1L MUSAFFO",
+          "quantity": 1,
+          "price": 13200,
+          "category": "Dairy"
+        },
+        {
+          "name": "SMETANA 15% 400GR ESSI",
+          "quantity": 1,
+          "price": 17900,
+          "category": "Other"
+        },
+        {
+          "name": "LAG'MON 500GR KLASSIK",
+          "quantity": 1,
+          "price": 12500,
+          "category": "Other"
+        },
+        {
+          "name": "MAKARON SPIRAL 400GR KORONA",
+          "quantity": 1,
+          "price": 6950,
+          "category": "Other"
+        },
+        {
+          "name": "NON PATIR 300GR",
+          "quantity": 2,
+          "price": 9900,
+          "category": "Bakery"
+        },
+        {
+          "name": "GRECHKA 1KG KUNDALIK RO'ZG'OR",
+          "quantity": 1,
+          "price": 7500,
+          "category": "Other"
+        },
+        {
+          "name": "SUV GAZLANGAN MINERAL 700ML CHOTQOL",
+          "quantity": 1,
+          "price": 5500,
+          "category": "Other"
+        },
+        {
+          "name": "MUZQAYMOQ PLOMBIR PRESENT TOFFI SHOK QOPLANGAN GLA BOD 100GR",
+          "quantity": 2,
+          "price": 15000,
+          "category": "Other"
+        }
+      ],
+      "discounts": []
     }
   ],
   "scans": [
@@ -195,28 +297,60 @@
       "totalAmount": 174000
     },
     {
-      "id": "3c68",
-      "url": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
-      "timestamp": 1750848575842,
+      "id": "f440",
+      "url": "https://ofd.soliq.uz/check?t=VG343420005155&r=61558&c=20250525192626&s=102504933644",
+      "timestamp": 1750855525725,
       "success": true,
-      "receiptId": "2e22",
-      "totalAmount": 15980
+      "receiptId": "4a70",
+      "totalAmount": 56200
     },
     {
-      "id": "ab58",
-      "url": "https://ofd.soliq.uz/check?t=UZ210317220183&r=56845&c=20250624125532&s=058503180161",
-      "timestamp": 1750849090772,
+      "id": "00d8",
+      "url": "https://ofd.soliq.uz/check?t=UZ210317220191&r=8455&c=20250526132155&s=077573007697",
+      "timestamp": 1750855537999,
       "success": true,
-      "receiptId": "dfdd",
+      "receiptId": "2e30",
+      "totalAmount": 21778.2
+    },
+    {
+      "id": "0951",
+      "url": "https://ofd.soliq.uz/check?t=UZ210317220183&r=56845&c=20250624125532&s=058503180161",
+      "timestamp": 1750855547507,
+      "success": true,
+      "receiptId": "5157",
       "totalAmount": 29716.6
     },
     {
-      "id": "4acf",
+      "id": "e825",
       "url": "https://ofd.soliq.uz/check?t=UZ210317220191&r=11659&c=20250624125510&s=074452156175",
-      "timestamp": 1750849780290,
+      "timestamp": 1750855563312,
       "success": true,
-      "receiptId": "e82c",
+      "receiptId": "222a",
       "totalAmount": 15980
+    },
+    {
+      "id": "d8d7",
+      "url": "https://ofd.soliq.uz/check?t=VG343420001178&r=719&c=20250524223043&s=449810535593",
+      "timestamp": 1750855575028,
+      "success": true,
+      "receiptId": "8b6b",
+      "totalAmount": 50000
+    },
+    {
+      "id": "72dc",
+      "url": "https://ofd.soliq.uz/check?t=YZ231006014810&r=23348&c=20250522114224&s=703004233112",
+      "timestamp": 1750855602533,
+      "success": true,
+      "receiptId": "29aa",
+      "totalAmount": 27900
+    },
+    {
+      "id": "7341",
+      "url": "https://ofd.soliq.uz/check?t=VG343420007017&r=253298&c=20250525225722&s=438255304204",
+      "timestamp": 1750855619702,
+      "success": true,
+      "receiptId": "8ad4",
+      "totalAmount": 101950
     }
   ]
 }

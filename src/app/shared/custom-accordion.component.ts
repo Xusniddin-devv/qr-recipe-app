@@ -6,15 +6,17 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="border border-gray-200 rounded-md mb-2 overflow-hidden">
+    <div
+      class="border border-slate-700 rounded-lg mb-2 overflow-hidden bg-slate-800"
+    >
       <button
         (click)="toggle()"
-        class="w-full flex justify-between items-center p-4 text-left bg-gray-50 hover:bg-gray-100 focus:outline-none"
+        class="w-full flex justify-between items-center p-4 text-left hover:bg-slate-700/50 focus:outline-none transition-colors duration-200"
         [attr.aria-expanded]="isOpen()"
       >
-        <span class="font-medium text-gray-800">{{ title }}</span>
+        <span class="font-medium text-lg text-white">{{ title }}</span>
         <svg
-          class="w-6 h-6 transform transition-transform"
+          class="w-6 h-6 transform transition-transform text-slate-400"
           [class.rotate-180]="!isOpen()"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -30,8 +32,10 @@ import { CommonModule } from '@angular/common';
         </svg>
       </button>
       @if (isOpen()) {
-      <div class="p-4 border-t border-gray-200 bg-white">
-        <ng-content></ng-content>
+      <div class="border-t border-slate-700 bg-slate-800">
+        <div class="p-4">
+          <ng-content></ng-content>
+        </div>
       </div>
       }
     </div>

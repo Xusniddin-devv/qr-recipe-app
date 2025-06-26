@@ -11,18 +11,20 @@
 </app-empty-state>
 } @else {
 <div class="summary-container mb-6">
-  <h3 class="section-title text-lg sm:text-xl font-semibold mb-3 text-gray-700">
+  <h3
+    class="section-title text-lg sm:text-xl font-semibold mb-3 text-white border-l-4 border-blue-500 pl-3"
+  >
     Current Receipt
   </h3>
   <div class="grid gap-2 mb-6">
     @for (item of summary; track item.name) {
     <div
-      class="grid grid-cols-2 items-center p-3 bg-gray-50 rounded-lg shadow-sm"
+      class="grid grid-cols-2 items-center p-3 bg-slate-800 rounded-lg shadow-md"
     >
-      <span class="font-medium text-gray-800 text-sm sm:text-base">{{
+      <span class="font-medium text-slate-100 text-sm sm:text-base">{{
         item.name
       }}</span>
-      <span class="text-gray-600 text-right text-sm sm:text-base">
+      <span class="text-slate-300 text-right text-sm sm:text-base">
         @if (item.quantity !== null && item.quantity !== undefined) { @if
         (isItemPriceNaN(item.quantity)) {
         {{ item.quantity }}

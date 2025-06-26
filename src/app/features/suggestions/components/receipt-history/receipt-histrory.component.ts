@@ -53,11 +53,15 @@ export class ReceiptHistoryComponent implements OnInit {
   weeklyChartData: any;
   monthlyChartData: any;
 
+  // UPDATED: Chart options for dark theme and responsiveness
   chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false, // This is the key fix for the resizing issue
     plugins: {
       legend: {
         labels: {
-          color: '#495057',
+          // Set text color to be visible on a dark background
+          color: '#e5e7eb', // This is Tailwind's gray-200
         },
       },
     },
@@ -82,6 +86,7 @@ export class ReceiptHistoryComponent implements OnInit {
     this.receiptService.loadMonthlySummary();
   }
 
+  // UPDATED: Chart data creation with dark theme colors
   createChartData(summary: SummaryPeriod) {
     if (
       !summary ||
@@ -93,7 +98,9 @@ export class ReceiptHistoryComponent implements OnInit {
         datasets: [
           {
             data: [1],
-            backgroundColor: ['#EEEEEE'],
+            // Use a dark color for the "No Data" state
+            backgroundColor: ['#4b5563'], // Tailwind's gray-600
+            borderWidth: 0,
           },
         ],
       };
@@ -104,13 +111,16 @@ export class ReceiptHistoryComponent implements OnInit {
       datasets: [
         {
           data: summary.topCategories.map((cat) => cat.amount),
+          // Provide a new, vibrant color palette for the chart
           backgroundColor: [
-            '#42A5F5',
-            '#66BB6A',
-            '#FFA726',
-            '#26C6DA',
-            '#7E57C2',
+            '#3b82f6', // blue-500
+            '#22c55e', // green-500
+            '#f97316', // orange-500
+            '#14b8a6', // teal-500
+            '#8b5cf6', // violet-500
+            '#ec4899', // pink-500
           ],
+          borderWidth: 0, // A border is not needed on a dark background
         },
       ],
     };

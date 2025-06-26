@@ -11,7 +11,6 @@ import { EmptyStateComponent } from '../../shared/empty-state/empty-state.compon
   standalone: true,
   imports: [
     CommonModule,
-    AsyncPipe,
     MarkdownPipe,
     EmptyStateComponent,
     LoadingIndicatorComponent,

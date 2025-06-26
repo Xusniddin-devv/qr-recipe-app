@@ -1,143 +1,147 @@
 @if (receipt$ | async; as receipt) {
 <div class="p-4 max-w-3xl mx-auto">
-  <p-card styleClass="shadow-md">
-    <ng-template pTemplate="title">
-      <div class="flex justify-between items-center border-b pb-3 mb-2">
+  <!-- Custom Card Container -->
+  <div class="bg-slate-800 rounded-lg shadow-lg text-white">
+    <!-- Card Header -->
+    <div class="p-4 border-b border-slate-700">
+      <div class="flex justify-between items-center mb-2">
         <div class="flex items-center">
-          <i class="pi pi-receipt text-blue-500 mr-2 text-xl"></i>
-          <span class="text-xl font-medium">Receipt Details</span>
+          <i class="pi pi-receipt text-blue-400 mr-2 text-xl"></i>
+          <span class="text-xl font-medium text-slate-100"
+            >Receipt Details</span
+          >
         </div>
         <a
-          routerLink="/scanner"
-          class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1 rounded transition-colors flex items-center"
+          routerLink="/scan"
+          class="text-blue-400 hover:text-blue-300 px-3 py-1 rounded-full transition-colors flex items-center text-sm"
         >
           <i class="pi pi-arrow-left mr-1"></i>
           <span>Back to Scanner</span>
         </a>
       </div>
-    </ng-template>
-    <ng-template pTemplate="subtitle">
-      <div class="text-gray-600 mb-4">
+      <div class="text-slate-400 text-sm">
         <i class="pi pi-calendar mr-1"></i>
         Scanned on {{ receipt.scanDate | date : "fullDate" }} at
         {{ receipt.scanDate | date : "shortTime" }}
       </div>
-    </ng-template>
-
-    <!-- Product List -->
-    <div class="mb-6 bg-gray-50 p-4 rounded-lg">
-      <h3 class="font-bold mb-3 text-gray-800 flex items-center">
-        <i class="pi pi-shopping-cart mr-2 text-gray-600"></i>
-        Products
-      </h3>
-      <ul class="list-none p-0 m-0 divide-y divide-gray-200">
-        @for(product of receipt.products; track product.name) {
-        <li
-          class="py-3 flex justify-between items-center hover:bg-gray-100 px-2 rounded transition-colors"
-        >
-          <div class="flex-1 pr-2">
-            <span class="font-medium">{{ product.name }}</span>
-            @if(product.quantity && product.quantity !== 1) {
-            <span class="text-sm text-gray-500 ml-2"
-              >× {{ product.quantity }}</span
-            >
-            }
-          </div>
-          <span class="font-mono font-semibold text-gray-800">{{
-            product.price | currency : "UZS " : "symbol" : "1.0-0"
-          }}</span>
-        </li>
-        }
-      </ul>
     </div>
 
-    <!-- Discounts -->
-    @if(receipt.discounts && receipt.discounts.length > 0) {
-    <div class="mb-6 bg-green-50 p-4 rounded-lg">
-      <h3 class="font-bold mb-3 text-gray-800 flex items-center">
-        <i class="pi pi-tag mr-2 text-green-600"></i>
-        Discounts
-      </h3>
-      <ul class="list-none p-0 m-0 divide-y divide-green-100">
-        @for(discount of receipt.discounts; track discount.productName) {
-        <li class="py-2">
-          <div class="flex justify-between items-center">
-            <div>
-              <span class="font-medium text-green-700">{{
-                discount.discountName
-              }}</span>
-              <div class="text-sm text-green-600">
-                for <span class="italic">{{ discount.productName }}</span>
-              </div>
+    <!-- Card Content -->
+    <div class="p-4">
+      <!-- Product List -->
+      <div class="mb-6 bg-slate-700/50 p-4 rounded-lg">
+        <h3 class="font-bold mb-3 text-slate-200 flex items-center">
+          <i class="pi pi-shopping-cart mr-2 text-slate-400"></i>
+          Products
+        </h3>
+        <ul class="list-none p-0 m-0 divide-y divide-slate-600">
+          @for(product of receipt.products; track product.name) {
+          <li class="py-3 flex justify-between items-center px-2">
+            <div class="flex-1 pr-2">
+              <span class="font-medium text-slate-100">{{ product.name }}</span>
+              @if(product.quantity && product.quantity !== 1) {
+              <span class="text-sm text-slate-400 ml-2"
+                >× {{ product.quantity }}</span
+              >
+              }
             </div>
-            <span class="font-mono text-green-700 font-bold"
-              >-{{
-                discount.discountValue | currency : "UZS " : "symbol" : "1.0-0"
-              }}</span
-            >
-          </div>
-        </li>
-        }
-      </ul>
-    </div>
-    }
-
-    <!-- Total -->
-    <div
-      class="bg-gray-100 p-4 rounded-lg font-bold text-xl flex justify-between items-center"
-    >
-      <span class="text-gray-800">Total:</span>
-      <span class="font-mono text-blue-800">{{
-        receipt.totalAmount | currency : "UZS " : "symbol" : "1.0-0"
-      }}</span>
-    </div>
-
-    <!-- AI Suggestions -->
-    @if(receipt.aiSuggestions) {
-    <div class="mt-6 border-t pt-4">
-      <h3 class="font-bold text-lg mb-3 text-gray-800 flex items-center">
-        <i class="pi pi-lightbulb mr-2 text-yellow-500"></i>
-        AI Suggestions
-      </h3>
-
-      @if(receipt.aiSuggestions.healthSuggestions.length) {
-      <div class="mb-4 bg-green-50 p-3 rounded-lg">
-        <h4 class="font-semibold mb-2 text-green-700 flex items-center">
-          <i class="pi pi-heart-fill mr-1 text-green-600"></i>
-          Health
-        </h4>
-        <div
-          class="prose prose-sm max-w-none text-green-900"
-          [innerHTML]="
-            formatSuggestions(receipt.aiSuggestions.healthSuggestions)
-              | markdown
-          "
-        ></div>
+            <span class="font-mono font-semibold text-slate-200">{{
+              product.price | currency : "UZS " : "symbol" : "1.0-0"
+            }}</span>
+          </li>
+          }
+        </ul>
       </div>
-      } @if(receipt.aiSuggestions.savingSuggestions.length) {
-      <div class="bg-orange-50 p-3 rounded-lg">
-        <h4 class="font-semibold mb-2 text-orange-700 flex items-center">
-          <i class="pi pi-dollar mr-1 text-orange-600"></i>
-          Savings
-        </h4>
-        <div
-          class="prose prose-sm max-w-none text-orange-900"
-          [innerHTML]="
-            formatSuggestions(receipt.aiSuggestions.savingSuggestions)
-              | markdown
-          "
-        ></div>
+
+      <!-- Discounts -->
+      @if(receipt.discounts && receipt.discounts.length > 0) {
+      <div class="mb-6 bg-green-900/30 p-4 rounded-lg">
+        <h3 class="font-bold mb-3 text-slate-200 flex items-center">
+          <i class="pi pi-tag mr-2 text-green-400"></i>
+          Discounts
+        </h3>
+        <ul class="list-none p-0 m-0 divide-y divide-green-500/20">
+          @for(discount of receipt.discounts; track discount.productName) {
+          <li class="py-2">
+            <div class="flex justify-between items-center">
+              <div>
+                <span class="font-medium text-green-300">{{
+                  discount.discountName
+                }}</span>
+                <div class="text-sm text-green-400/80">
+                  for <span class="italic">{{ discount.productName }}</span>
+                </div>
+              </div>
+              <span class="font-mono text-green-300 font-bold"
+                >-{{
+                  discount.discountValue
+                    | currency : "UZS " : "symbol" : "1.0-0"
+                }}</span
+              >
+            </div>
+          </li>
+          }
+        </ul>
+      </div>
+      }
+
+      <!-- Total -->
+      <div
+        class="bg-slate-900/70 p-4 rounded-lg font-bold text-xl flex justify-between items-center"
+      >
+        <span class="text-slate-100">Total:</span>
+        <span class="font-mono text-blue-300">{{
+          receipt.totalAmount | currency : "UZS " : "symbol" : "1.0-0"
+        }}</span>
+      </div>
+
+      <!-- AI Suggestions -->
+      @if(receipt.aiSuggestions) {
+      <div class="mt-6 border-t border-slate-700 pt-4">
+        <h3 class="font-bold text-lg mb-3 text-slate-100 flex items-center">
+          <i class="pi pi-lightbulb mr-2 text-yellow-400"></i>
+          AI Suggestions
+        </h3>
+
+        @if(receipt.aiSuggestions.healthSuggestions.length) {
+        <div class="mb-4 bg-green-900/30 p-3 rounded-lg">
+          <h4 class="font-semibold mb-2 text-green-300 flex items-center">
+            <i class="pi pi-heart-fill mr-2 text-green-400"></i>
+            Health
+          </h4>
+          <div
+            class="prose prose-sm max-w-none prose-invert text-slate-300"
+            [innerHTML]="
+              formatSuggestions(receipt.aiSuggestions.healthSuggestions)
+                | markdown
+            "
+          ></div>
+        </div>
+        } @if(receipt.aiSuggestions.savingSuggestions.length) {
+        <div class="bg-orange-900/30 p-3 rounded-lg">
+          <h4 class="font-semibold mb-2 text-orange-300 flex items-center">
+            <i class="pi pi-dollar mr-2 text-orange-400"></i>
+            Savings
+          </h4>
+          <div
+            class="prose prose-sm max-w-none prose-invert text-slate-300"
+            [innerHTML]="
+              formatSuggestions(receipt.aiSuggestions.savingSuggestions)
+                | markdown
+            "
+          ></div>
+        </div>
+        }
       </div>
       }
     </div>
-    }
-  </p-card>
+  </div>
 </div>
 } @else {
 <div class="p-8 text-center">
   <div class="flex flex-col items-center justify-center h-64">
     <i class="pi pi-spin pi-spinner text-4xl text-blue-400 mb-4"></i>
-    <p class="text-gray-500">Loading receipt details...</p>
+    <p class="text-slate-400">Loading receipt details...</p>
   </div>
 </div>
 }
